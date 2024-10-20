@@ -171,6 +171,26 @@
                                                 src = ./. ;
                                                 installPhase =
                                                     let
+                                                        resource =
+                                                            lib
+                                                                {
+                                                                    at =
+                                                                        pkgs.writeShellScript
+                                                                            "at"
+                                                                            ''
+                                                                            '' ;
+                                                                    cache = { } ;
+                                                                    cache-broken-directory = "${ pkgs.coreutils }/bin/mktemp --dry-run -t XXXXXXXX.d9f62079fdb278a0cc34320b3ab49be1294c3fac" ;
+                                                                    directory = "/tmp/328c9d7ba28416ac686ff86392fd1870763ff682" ;
+                                                                    hash = "d52b8a8e6e8e5e36fdce2bcf2f620290dabebaaaef7b63b970ba89c7a5947c604078eb1913886d8c8eb2fec58f878951dd623e8adeb3435b1bca8cc62f8d448f" ;
+                                                                    invalid-cache-throw = value : "c90d6874943e76a301596fb32145a3a472f40d89d91936398f1f06d0b02f1c0e93952f8b5abae1b27df04738fcfaf2ea8997929932369cb1475290cf6150f114 ${ builtins.typeOf value }" ;
+                                                                    invalid-script-throw = value : "fd87768efd0728b1247349f41019a852c53b2cdc0d0bcff02ac09f939830db5bb15f2b135502a28cf8b0ff63517c3e617426cb259999b1f28c34a7eadc412fdc ${ builtins.typeOf value }" ;
+                                                                    invalid-temporary-throw = value : "5179f769b99da50803c0c42a8606bba9aa657545d6f81b9f27f2dd5692d9e81e3a0d8e98ce0aca5d7b4a4cdcfeff2bb84898edd413788a5e36ce780ca9d1a4a6 ${ builtins.typeOf value }" ;
+                                                                    lock-error-code = 75 ;
+                                                                    preparation-error-code = 76 ;
+                                                                    salt = "ad9f64392f6673cb7b30dd3b44a4c6acdd13ae507dbcc3998b62dd8a9f72c1199532598d261c374dc4073548fa8abd757ed714ce37b5f01b7aaac4bfe439cfa7" ;
+                                                                    timestamp = "c9e48583e0eb029b6c6feeedf011cd26ae1fb5e6a7cf6ec6a06f263284e5a57217b71a32647e6dfc33b3d4ea275ff4c1e644d11de7bde89ac7edd60fff5ba1f8" ;
+                                                                } ;
                                                         test =
                                                             ''
                                                                 test ( )
