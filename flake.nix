@@ -180,7 +180,8 @@
                                                                     '' ;
                                                                 in
                                                                     ''
-                                                                        ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test } > >( ${ pkgs.coreutils }/bin/tee $out ) 2>&1
+                                                                        export PATH=${ pkgs.coreutils }/bin &&
+                                                                            ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test } > >( ${ pkgs.coreutils }/bin/tee $out ) 2>&1
                                                                     ''
                                                         )
                                                     ] ;
