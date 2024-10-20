@@ -176,7 +176,10 @@
                                                             let
                                                                 test =
                                                                     ''
-                                                                        fail wtf
+                                                                        test_fail ( )
+                                                                            {
+                                                                                fail wtf
+                                                                            }
                                                                     '' ;
                                                                 in
                                                                     ''
