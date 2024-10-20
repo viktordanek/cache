@@ -9,7 +9,7 @@
             temporary-lib.url = "github:viktordanek/temporary" ;
         } ;
     outputs =
-        { environment-variable-lib , flake-utils , has-standard-input-lib , nixpkgs , self , strip-lib , temporary } :
+        { environment-variable-lib , flake-utils , has-standard-input-lib , nixpkgs , self , strip-lib , temporary-lib } :
             let
                 fun =
                     system :
@@ -25,7 +25,7 @@
                                     hash ? "aa6c893e3652ad06faf199905e41493b205651e539aeeaee8351c9e8d320411f9361f3b6e6246585c6c200196906093235add2db2bc01077ee7a2127fe23cad6" ,
                                     invalid-cache-throw ? value : "1c7b556a5015fb0e1f25cdc86a2263d67db1ec6a8a89e7b3d214ae71b210925da7aa33b1a3ab607df423397434d0d36c53a64e82ac4b1235feb61145c16bcec6 ${ builtins.typeOf value }" ,
                                     invalid-script-throw ? value : "c17bfd9b3387602ede2ec5616c9e00ae2b2e89e514e63995cd1e5c978aa1dc56b180f5e638e36f1ca64eabad2581075f53ddd7915c3590c87b50b086bba963fa ${ builtins.typeOf value }" ,
-                                    invalid-cache-throw ? value : "c40ec39bf3fd871f3742a8be6bb2f2a836018b6443658a418814c9cf49b6cba902bcc62b32936dff38ee3cc75da0aa68f49b65558617e67ca36c0fbe8e48e38d ${ builtins.typeOf value }" ,
+                                    invalid-temporary-throw ? value : "c40ec39bf3fd871f3742a8be6bb2f2a836018b6443658a418814c9cf49b6cba902bcc62b32936dff38ee3cc75da0aa68f49b65558617e67ca36c0fbe8e48e38d ${ builtins.typeOf value }" ,
                                     lock-error-code ? 65 ,
                                     preparation-error-code ? 66 ,
                                     salt ? "2bcb8318af769ce4d8543f546018a507a28b6f92f74f6bbc3fbd0d6e510619be962459dd430fad9d9065a38a13f823c1cad40500c20a1851043b68709343f74c" ,
@@ -66,7 +66,7 @@
                                                                             resource = "b7525e1989f7c9828bf8f80706fc2cb52d8af2127d9bdc07f09af5f93901236eae001d620466b59ced64156531715778c4a59ec713e797ebb9bbfa64d06966db" ;
                                                                             target = "c9288b6c7ba6701be9f06896c2af5d0402b8893b138ac810b84fbe70f041962a15e11251c9f55741ad4ea09f2f37f1570bdc579029e47c22a34fd14a89566344" ;
                                                                             temporary-resource-directory = "${ pkgs.coreutils }/bin/mktemp -t XXXXXXXX.27aab8b58c44dd9fd9e4f2d642b1862c94a793c8" ;
-                                                                            temporary-broken-directory = "${ pkgs.coreutils }/bin/mktemp -t XXXXXXXX.4220e8baf832809cb6a27e0e5709ba4b8a94046b" '
+                                                                            temporary-broken-directory = "${ pkgs.coreutils }/bin/mktemp -t XXXXXXXX.4220e8baf832809cb6a27e0e5709ba4b8a94046b" ;
                                                                         } ;
                                                                 in
                                                                     ''
@@ -84,7 +84,7 @@
                                                                                     PARENT_ID=$( ${ pkgs.ps }/bin/ps -o ppid= -p ${ environment-variable "$" } )
                                                                             fi &&
                                                                             EXPIRY=$(( ( ${ builtins.toString cache.life } * ( ${ environment-variable timestamp } / ${ builtins.toString cache.life } ) ) + ${ builtins.toString cache.life } )) &&
-                                                                            export ${ hash }=$( ${ pkgs.coreutils }/bin/echo $( ${ pkgs.coreutils }/bin/whoami ) ${ environment-variable "EXPIRY" } ${ builtins.hashString "sha512" ( builtins.concatStringsSep "-" ( builtins.concatLists [ path [ name cache.provision ( builtins.toString life ) salt ] ] ) ) } ${ environment-variable "ARGUMENTS" } ${ environment-variable "HAS_STANDARD_INPUT" } ${ environment-variable "STANDARD_INPUT" } | ${ pkgs.coreutils }/bin/sha512sum | ${ pkgs.coreutils }/bin/cut --bytes -128 ) &&
+                                                                            export ${ hash }=$( ${ pkgs.coreutils }/bin/echo $( ${ pkgs.coreutils }/bin/whoami ) ${ environment-variable "EXPIRY" } ${ builtins.hashString "sha512" ( builtins.concatStringsSep "-" ( builtins.concatLists [ path [ name cache.provision ( builtins.toString cache.life ) ( builtins.toString cache.force ) salt ] ] ) ) } ${ environment-variable "ARGUMENTS" } ${ environment-variable "HAS_STANDARD_INPUT" } ${ environment-variable "STANDARD_INPUT" } | ${ pkgs.coreutils }/bin/sha512sum | ${ pkgs.coreutils }/bin/cut --bytes -128 ) &&
                                                                             exec 200> ${ directory }/${ environment-variable hash }.lock &&
                                                                             if ${ pkgs.flock }/bin/flock 200
                                                                             then
@@ -172,8 +172,17 @@
                                                 args =
                                                     [
                                                         "-c"
-                                                        ''
-                                                        ''
+                                                        (
+                                                            let
+                                                                test =
+                                                                    ''
+                                                                        fail wtf
+                                                                    '' ;
+                                                                in
+                                                                    ''
+                                                                        ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test } > >( ${ pkgs.coreutils }/bin/tee $out ) 2>&1
+                                                                    ''
+                                                        )
                                                     ] ;
                                             } ;
                                     lib = lib ;
