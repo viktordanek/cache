@@ -195,6 +195,31 @@
                                                                     lock-error-code = 75 ;
                                                                     preparation-error-code = 76 ;
                                                                     salt = "ad9f64392f6673cb7b30dd3b44a4c6acdd13ae507dbcc3998b62dd8a9f72c1199532598d261c374dc4073548fa8abd757ed714ce37b5f01b7aaac4bfe439cfa7" ;
+                                                                    scripts =
+                                                                        let
+                                                                            model =
+                                                                                method : { pkgs , ... } : target :
+                                                                                    ''
+                                                                                        ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
+                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/${ method }.arguments.asc &&
+                                                                                            if ${ has-standard-input }
+                                                                                            then
+                                                                                                ${ pkgs.coreutils }/bin/echo true > ${ environment-variable target }/${ method }.has-standard-input.asc &&
+                                                                                                    ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/${ method }.standard-input.asc
+                                                                                            else
+                                                                                                ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/${ method }/has-standard-input.asc
+                                                                                            fi
+                                                                                    '' ;
+                                                                            in
+                                                                                {
+                                                                                    init = model "init" ;
+                                                                                    release = model "release" ;
+                                                                                } ;
+                                                                    secondary = { pkgs = pkgs ; } ;
+                                                                    temporaryX =
+                                                                        {
+                                                                            alpha = scripts : { init = scripts.init ; release = scripts.release ; } ;
+                                                                        } ;
                                                                     timestamp = "c9e48583e0eb029b6c6feeedf011cd26ae1fb5e6a7cf6ec6a06f263284e5a57217b71a32647e6dfc33b3d4ea275ff4c1e644d11de7bde89ac7edd60fff5ba1f8" ;
                                                                 } ;
                                                         test =
