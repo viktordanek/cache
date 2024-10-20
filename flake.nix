@@ -185,7 +185,10 @@
                                                                             "at"
                                                                             ''
                                                                             '' ;
-                                                                    cache = { } ;
+                                                                    cache =
+                                                                        {
+                                                                            alpha = temporary : { provision = temporary.alpha ; life = 2 ; force = false ; } ;
+                                                                        } ;
                                                                     cache-broken-directory = "${ pkgs.coreutils }/bin/mktemp --dry-run -t XXXXXXXX.d9f62079fdb278a0cc34320b3ab49be1294c3fac" ;
                                                                     directory = "/tmp/328c9d7ba28416ac686ff86392fd1870763ff682" ;
                                                                     hash = "d52b8a8e6e8e5e36fdce2bcf2f620290dabebaaaef7b63b970ba89c7a5947c604078eb1913886d8c8eb2fec58f878951dd623e8adeb3435b1bca8cc62f8d448f" ;
