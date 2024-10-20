@@ -195,7 +195,7 @@
                                                             ''
                                                                 test ( )
                                                                     {
-                                                                        fail wtf
+                                                                        ${ pkgs.coreutils }/bin/echo fail wtf
                                                                     }
                                                             '' ;
                                                         in
