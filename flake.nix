@@ -168,26 +168,23 @@
                                         pkgs.stdenv.mkDerivation
                                             {
                                                 name = "test-lib" ;
-                                                builder = "${pkgs.bash}/bin/bash" ;
-                                                args =
-                                                    [
-                                                        "-c"
-                                                        (
-                                                            let
-                                                                test =
-                                                                    ''
-                                                                        test_fail ( )
-                                                                            {
-                                                                                fail wtf
-                                                                            }
-                                                                    '' ;
-                                                                in
-                                                                    ''
-                                                                        export PATH=${ pkgs.coreutils }/bin &&
-                                                                            ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test } > >( ${ pkgs.coreutils }/bin/tee $out ) 2>&1
-                                                                    ''
-                                                        )
-                                                    ] ;
+                                                src = ./. ;
+                                                installPhase =
+                                                    let
+                                                        test =
+                                                            ''
+                                                                test ( )
+                                                                    {
+                                                                        fail wtf
+                                                                    }
+                                                            '' ;
+                                                        in
+                                                            ''
+                                                                export EXPECTED_DIRECTORY=$out &&
+                                                                    ${ pkgs.coreutils }/bin/touch ${ environment-variable "EXPECTED_DIRECTORY" } &&
+                                                                    export PATH=${ pkgs.coreutils }/bin:${ environment-variable "PATH" } &&
+                                                                    ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
+                                                            '' ;
                                             } ;
                                     lib = lib ;
                                 } ;
