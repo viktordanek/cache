@@ -36,6 +36,22 @@
                                             path : name : value :
                                                 if builtins.typeOf value == "lambda" then
                                                     let
+                                                        evict =
+                                                            ''
+                                                            ${ pkgs.findutils }/bin/find ${ environment-variable "BASE" } -mindepth 1 -maxdepth 1 -type f | while read HASH_FILE
+                                                                do
+                                                                    HASH=$( ${ pkgs.coreutils }/bin/cat ${ environment-variable "HASH_FILE" } ) &&
+                                                                        ${ pkgs.inotify-tools }/bin/inotifywait --event delete_self ${ directory }/${ environment-variable "HASH" } &&
+                                                                        ${ pkgs.coreutils }/bin/rm ${ environment-variable "HASH_FILE" }
+                                                                done &&
+                                                                ${ pkgs.findutils }/bin/find ${ environment-variable "BASE" } -mindepth 1 -maxdepth 1 -type f | while read PID_FILE
+                                                                do
+                                                                    PID=$( ${ pkgs.coreutils }/bin/cat ${ environment-variable "PID_FILE" } ) &&
+                                                                        ${ pkgs.coreutils }/bin/tail --follow /dev/null --pid ${ environment-variable "PID" } &&
+                                                                        ${ pkgs.coreutils }/bin/rm ${ environment-variable "PID_FILE" }
+                                                                done &&
+                                                                ${ pkgs.coreutils }/bin/rm --recursive --force ${ environment-variable "BASE" }
+                                                            '' ;
                                                         invoke =
                                                             let
                                                                 cache = value temporary-scripts ;
@@ -61,9 +77,11 @@
                                                                             then
                                                                                 HAS_STANDARD_INPUT=true &&
                                                                                     STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee ) &&
+                                                                                    PARENT_ID=$( ${ pkgs.ps }/bin/ps -o ppid= -p $( ${ pkgs.ps }/bin/ps -o ppid= -p ${ environment-variable "$" } ) )
                                                                             else
                                                                                 HAS_STANDARD_INPUT=false &&
-                                                                                    STANDARD_INPUT=
+                                                                                    STANDARD_INPUT= &&
+                                                                                    PARENT_ID=$( ${ pkgs.ps }/bin/ps -o ppid= -p ${ environment-variable "$" } )
                                                                             fi &&
                                                                             EXPIRY=$(( ( ${ builtins.toString cache.life } * ( ${ environment-variable timestamp } / ${ builtins.toString cache.life } ) ) + ${ builtins.toString cache.life } )) &&
                                                                             export ${ hash }=$( ${ pkgs.coreutils }/bin/echo $( ${ pkgs.coreutils }/bin/whoami ) ${ environment-variable "EXPIRY" } ${ builtins.hashString "sha512" ( builtins.concatStringsSep "-" ( builtins.concatLists [ path [ name cache.provision ( builtins.toString life ) salt ] ] ) ) } ${ environment-variable "ARGUMENTS" } ${ environment-variable "HAS_STANDARD_INPUT" } ${ environment-variable "STANDARD_INPUT" } | ${ pkgs.coreutils }/bin/sha512sum | ${ pkgs.coreutils }/bin/cut --bytes -128 ) &&
@@ -77,9 +95,11 @@
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ directory }/${ environment-variable hash }/has-standard-input.asc &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ directory }/${ environment-variable hash }/standard-input.asc &&
                                                                                         ${ pkgs.coreutils }/bin/echo $(( ${ environment-variable "EXPIRY" } > ${ directory }/${ environment-variable hash }/expiry.asc &&
+                                                                                        ${ pkgs.coreutils }/bin/echo ${ if cache.force then "true" else "false" } > ${ directory }/${ environment-variable hash }/force.asc &&
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ cache.provision } ${ directory }/${ environment-variable hash }/provision.sh &&
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ pkgs.writeShellScript "prepare" prepare } ${ directory }/${ environment-variable hash }/prepare.sh &&
-                                                                                        ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/arguments.asc ${ directory }/${ environment-variable hash }/has-standard-input.asc ${ directory }/${ environment-variable hash }/standard-input.asc ${ directory }/${ environment-variable hash }/expiry.asc &&
+                                                                                        ${ pkgs.coreutils }/bin/ln --symbolic ${ pkgs.writeShellScript "evict" evict } ${ directory }/${ environment-variable hash }/evict.sh &&
+                                                                                        ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/arguments.asc ${ directory }/${ environment-variable hash }/has-standard-input.asc ${ directory }/${ environment-variable hash }/standard-input.asc ${ directory }/${ environment-variable hash }/expiry.asc ${ directory }/${ environment-variable hash }/force.asc &&
                                                                                         ${ pkgs.coreutils }/bin/echo "${ directory }/${ environment-variable hash }/prepare.sh" | ${ at } now > /dev/null 2>&1 &&
                                                                                         ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
                                                                                         ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
@@ -92,8 +112,13 @@
                                                                                 fi &&
                                                                                 if [ ! -f ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash ]
                                                                                 then
-                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "PARENT_HASH" } ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash &&
-                                                                                    ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash
+                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "PARENT_HASH" } > ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash &&
+                                                                                        ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash
+                                                                                fi &&
+                                                                                if [ ! -f ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid ]
+                                                                                then
+                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "PARENT_PID" } > ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid &&
+                                                                                        ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid
                                                                                 fi &&
                                                                                 ${ pkgs.coreutils }/bin/readlink ${ directory }/${ environment-variable hash }/link
                                                                             else
@@ -124,13 +149,10 @@
                                                                     if [ ${ environment-variable "STATUS" } == 0 ]
                                                                     then
                                                                         ${ pkgs.coreutils }/bin/sleep $(( $( ${ pkgs.coreutils }/bin/cat ${ environment-variable "BASE" }/expiry.sh ) - $( ${ pkgs.coreutils }/bin/date +%s ) )) &&
-                                                                        ${ pkgs.findutils }/bin/find ${ environment-variable "BASE" } -mindepth 1 -maxdepth 1 -type f | while read HASH_FILE
-                                                                        do
-                                                                            HASH=$( ${ pkgs.coreutils }/bin/cat ${ environment-variable "HASH_FILE" } ) &&
-                                                                                ${ pkgs.inotify-tools }/bin/inotifywait --event delete_self ${ directory }/${ environment-variable "HASH" } &&
-                                                                                ${ pkgs.coreutils }/bin/rm ${ environment-variable "HASH_FILE" }
-                                                                        done &&
-                                                                        ${ pkgs.coreutils }/bin/rm --recursive --force ${ environment-variable "BASE" }
+                                                                            if [ -L ${ environment-variable "BASE" }/evict.sh ]
+                                                                            then
+                                                                                ${ environment-variable "BASE" }/evict.sh
+                                                                            fi
                                                                     fi
                                                             '' ;
                                                         in pkgs.writeShellScript name invoke
