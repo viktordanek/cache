@@ -4,18 +4,20 @@
             environment-variable-lib.url = "github:viktordanek/environment-variable" ;
             flake-utils.url = "github:numtide/flake-utils" ;
             has-standard-input-lib.url = "github:viktordanek/has-standard-input" ;
+            invalid-value-lib.url = "github:viktordanek/invalid-value" ;
             nixpkgs.url = "github:NixOs/nixpkgs" ;
             strip-lib.url = "github:viktordanek/strip" ;
             temporary-lib.url = "github:viktordanek/temporary" ;
         } ;
     outputs =
-        { environment-variable-lib , flake-utils , has-standard-input-lib , nixpkgs , self , strip-lib , temporary-lib } :
+        { environment-variable-lib , flake-utils , has-standard-input-lib , invalid-value-lib , nixpkgs , self , strip-lib , temporary-lib } :
             let
                 fun =
                     system :
                         let
                             environment-variable = builtins.getAttr system ( builtins.getAttr "lib" environment-variable-lib ) ;
                             has-standard-input = builtins.getAttr system ( builtins.getAttr "lib" has-standard-input-lib ) ;
+                            invalid-value = builtins.getAttr system ( builtins.getAttr "lib" invalid-value-lib ) ;
                             lib =
                                 {
                                     at ? "/run/wrappers/bin/at" ,
@@ -23,7 +25,7 @@
                                     cache-broken-directory ? "${ pkgs.coreutils }/bin/mktemp --dry-run -t XXXXXXXX.68202bb7d407f0a83e8d1e63bbce51cca125b46c" ,
                                     directory ? "/tmp/1ec9efe065edf985cbc546e9d0267cdcb5c2b9bb" ,
                                     hash ? "aa6c893e3652ad06faf199905e41493b205651e539aeeaee8351c9e8d320411f9361f3b6e6246585c6c200196906093235add2db2bc01077ee7a2127fe23cad6" ,
-                                    invalid-cache-throw ? value : "1c7b556a5015fb0e1f25cdc86a2263d67db1ec6a8a89e7b3d214ae71b210925da7aa33b1a3ab607df423397434d0d36c53a64e82ac4b1235feb61145c16bcec6 ${ builtins.typeOf value }" ,
+                                    invalid-cache-throw ? seed : path : name : value : invalid-value "72fe36fec58289dcf2b1fc6726041f41fe8de61866ab7bd841417024d38ae275db99670ed44f0336e7e09ff3e15055e8b2b4cdc70b6f1206d12fd2f9603657ff" ,
                                     invalid-script-throw ? value : "c17bfd9b3387602ede2ec5616c9e00ae2b2e89e514e63995cd1e5c978aa1dc56b180f5e638e36f1ca64eabad2581075f53ddd7915c3590c87b50b086bba963fa ${ builtins.typeOf value }" ,
                                     invalid-temporary-throw ? value : "c40ec39bf3fd871f3742a8be6bb2f2a836018b6443658a418814c9cf49b6cba902bcc62b32936dff38ee3cc75da0aa68f49b65558617e67ca36c0fbe8e48e38d ${ builtins.typeOf value }" ,
                                     lock-error-code ? 65 ,
@@ -198,7 +200,7 @@
                                                             '' ;
                                                         in pkgs.writeShellScript name invoke
                                                 else if builtins.typeOf value == "set" then builtins.mapAttrs ( mapper ( builtins.concatLists [ path [ name ] ] ) ) value
-                                                else builtins.throw ( invalid-cache-throw value ) ;
+                                                else builtins.throw ( invalid-cache-throw path name value ) ;
                                         in builtins.mapAttrs ( mapper [ ] ) cache ;
                             pkgs = import nixpkgs { system = system ; } ;
                             strip = builtins.getAttr system ( builtins.getAttr "lib" strip-lib ) ;
