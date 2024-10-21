@@ -119,13 +119,11 @@
                                                                                                 exit ${ builtins.toString preparation-error-code }
                                                                                         fi
                                                                                 fi &&
-                                                                                ${ pkgs.coreutils }/bin/echo AAA 0001120 >> /build/debug &&
                                                                                 if [ ! -f ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash ]
                                                                                 then
                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "PARENT_HASH" } > ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash &&
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash
                                                                                 fi &&
-                                                                                ${ pkgs.coreutils }/bin/echo AAA 0001130 >> /build/debug &&
                                                                                 if [ ! -f ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid ]
                                                                                 then
                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "PARENT_PID" } > ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid &&
