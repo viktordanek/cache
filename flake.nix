@@ -78,7 +78,7 @@
                                                                     ''
                                                                         export ${ timestamp }=${ environment-variable "${ timestamp }:=$( ${ pkgs.coreutils }/bin/date +%s )" } &&
                                                                             PARENT_HASH=${ environment-variable hash } &&
-                                                                            ARGUMENTS=${ environment-variable "@" } &&]
+                                                                            ARGUMENTS=${ environment-variable "@" } &&
                                                                             if ${ has-standard-input }
                                                                             then
                                                                                 HAS_STANDARD_INPUT=true &&
@@ -100,16 +100,15 @@
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ directory }/${ environment-variable hash }/arguments.asc &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ directory }/${ environment-variable hash }/has-standard-input.asc &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ directory }/${ environment-variable hash }/standard-input.asc &&
-                                                                                        ${ pkgs.coreutils }/bin/echo $(( ${ environment-variable "EXPIRY" } > ${ directory }/${ environment-variable hash }/expiry.asc &&
+                                                                                        ${ pkgs.coreutils }/bin/echo ${ environment-variable "EXPIRY" } > ${ directory }/${ environment-variable hash }/expiry.asc &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ if cache.force then "true" else "false" } > ${ directory }/${ environment-variable hash }/force.asc &&
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ cache.provision } ${ directory }/${ environment-variable hash }/provision.sh &&
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ pkgs.writeShellScript "prepare" prepare } ${ directory }/${ environment-variable hash }/prepare.sh &&
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ pkgs.writeShellScript "evict" evict } ${ directory }/${ environment-variable hash }/evict.sh &&
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/arguments.asc ${ directory }/${ environment-variable hash }/has-standard-input.asc ${ directory }/${ environment-variable hash }/standard-input.asc ${ directory }/${ environment-variable hash }/expiry.asc ${ directory }/${ environment-variable hash }/force.asc &&
                                                                                         ${ pkgs.coreutils }/bin/echo "${ directory }/${ environment-variable hash }/prepare.sh" | ${ at } now > /dev/null 2>&1 &&
-                                                                                        ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
-                                                                                        ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
-                                                                                        ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
+                                                                                        ${ pkgs.coreutils }/bin/sleep 10 &&
+                                                                                        # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
                                                                                         if [ $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) != 0 ]
                                                                                         then
                                                                                             ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) &&
@@ -180,17 +179,17 @@
                                                         resource =
                                                             lib
                                                                 {
-                                                                    at =
-                                                                        pkgs.writeShellScript
-                                                                            "at"
-                                                                            ''
-                                                                            '' ;
+                                                                    # at =
+                                                                    #     pkgs.writeShellScript
+                                                                    #        "at"
+                                                                    #        ''
+                                                                    #        '' ;
                                                                     cache =
                                                                         {
-                                                                            alpha = temporary : { provision = temporary.alpha ; life = 2 ; force = false ; } ;
+                                                                            alpha = temporary : { provision = "${ temporary }/temporary/alpha" ; life = 2 ; force = false ; } ;
                                                                         } ;
                                                                     cache-broken-directory = "${ pkgs.coreutils }/bin/mktemp --dry-run -t XXXXXXXX.d9f62079fdb278a0cc34320b3ab49be1294c3fac" ;
-                                                                    directory = "/tmp/328c9d7ba28416ac686ff86392fd1870763ff682" ;
+                                                                    directory = "${ environment-variable "TMPDIR" }/328c9d7ba28416ac686ff86392fd1870763ff682" ;
                                                                     hash = "d52b8a8e6e8e5e36fdce2bcf2f620290dabebaaaef7b63b970ba89c7a5947c604078eb1913886d8c8eb2fec58f878951dd623e8adeb3435b1bca8cc62f8d448f" ;
                                                                     invalid-cache-throw = value : "c90d6874943e76a301596fb32145a3a472f40d89d91936398f1f06d0b02f1c0e93952f8b5abae1b27df04738fcfaf2ea8997929932369cb1475290cf6150f114 ${ builtins.typeOf value }" ;
                                                                     invalid-script-throw = value : "fd87768efd0728b1247349f41019a852c53b2cdc0d0bcff02ac09f939830db5bb15f2b135502a28cf8b0ff63517c3e617426cb259999b1f28c34a7eadc412fdc ${ builtins.typeOf value }" ;
@@ -235,7 +234,21 @@
                                                         in
                                                             ''
                                                                 export EXPECTED_DIRECTORY=$out &&
-                                                                    ${ pkgs.coreutils }/bin/touch ${ environment-variable "EXPECTED_DIRECTORY" } &&
+                                                                    ${ pkgs.coreutils }/bin/echo EXPECTED_DIRECTORY=${ environment-variable "EXPECTED_DIRECTORY" } &&
+                                                                    if [ -f ${ pkgs.at }/bin/at ]
+                                                                    then
+                                                                        ${ pkgs.coreutils }/bin/echo HAS AT
+                                                                    else
+                                                                        ${ pkgs.coreutils }/bin/echo DOES NOT HAVE AT
+                                                                    fi &&
+                                                                    # ${ pkgs.which }/bin/which at &&
+                                                                    ${ pkgs.coreutils }/bin/echo alpha=${ resource.alpha } &&
+                                                                    ${ pkgs.coreutils }/bin/mkdir /build/328c9d7ba28416ac686ff86392fd1870763ff682 &&
+                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "EXPECTED_DIRECTORY" } &&
+                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "EXPECTED_DIRECTORY" }/alpha &&
+                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "EXPECTED_DIRECTORY" }/alpha/0 &&
+                                                                    ALPHA=$( ${ pkgs.coreutils }/bin/echo 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource.alpha } af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 ) &&
+                                                                    ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "ALPHA" } ${ environment-variable "EXPECTED_DIRECTORY" }/alpha/0
                                                                     export PATH=${ pkgs.coreutils }/bin:${ environment-variable "PATH" } &&
                                                                     ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
                                                             '' ;
