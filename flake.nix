@@ -109,9 +109,7 @@
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ pkgs.writeShellScript "evict" evict } ${ directory }/${ environment-variable hash }/evict.sh &&
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/arguments.asc ${ directory }/${ environment-variable hash }/has-standard-input.asc ${ directory }/${ environment-variable hash }/standard-input.asc ${ directory }/${ environment-variable hash }/expiry.asc ${ directory }/${ environment-variable hash }/force.asc &&
                                                                                         ${ pkgs.coreutils }/bin/echo "${ directory }/${ environment-variable hash }/prepare.sh" | ${ at } now >> /dev/null 2>&1 &&
-                                                                                        ${ pkgs.coreutils }/bin/echo BEFORE ${ pkgs.coreutils }/bin/sleep 1 >> /build/debug 2>&1 &&
                                                                                         ${ pkgs.coreutils }/bin/sleep 1 >> /build/debug 2>&1 &&
-                                                                                        ${ pkgs.coreutils }/bin/echo AFTER ${ pkgs.coreutils }/bin/sleep 1 >> /build/debug 2>&1 &&
                                                                                     ${ pkgs.coreutils }/bin/echo AAA 000111C >> /build/debug &&
                                                                                         # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
                                                                                         # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
