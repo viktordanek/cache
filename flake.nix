@@ -115,8 +115,7 @@
                                                                                         # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
                                                                                         if [ $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) != 0 ]
                                                                                         then
-                                                                                            ${ pkgs.coreutils }/bin/echo ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) >> /build/debug &&
-                                                                                            ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) &&
+                                                                                           ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) &&
                                                                                                 exit ${ builtins.toString preparation-error-code }
                                                                                         fi
                                                                                     ${ pkgs.coreutils }/bin/echo AAA 000111F >> /build/debug
