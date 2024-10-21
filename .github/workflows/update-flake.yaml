@@ -22,7 +22,7 @@ jobs:
 
       - name: Update flake dependencies
         run: |
-          nix flake lock --update-input nixpkgs --update-input flake-utils &&
+          nix flake lock &&
             if [[ -n $(git status --porcelain) ]]
             then
               nix flake check &&
