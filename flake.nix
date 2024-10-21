@@ -292,8 +292,6 @@
                                                                     else
                                                                         ${ pkgs.coreutils }/bin/echo FAILURE
                                                                     fi &&
-                                                                    ${ pkgs.coreutils }/bin/echo AFTER ALPHA ALPHA=${ environment-variable "ALPHA" } &&
-                                                                    ${ pkgs.coreutils }/bin/echo BEFORE DEBUG &&
                                                                     ${ pkgs.findutils }/bin/find /build/ -maxdepth 2 &&
                                                                     ${ pkgs.findutils }/bin/find /build/328c9d7ba28416ac686ff86392fd1870763ff682 /build/*.62f7ff21050af91d081b577d4ce480f8c94b98e1 /build/*.ce6807e0feab65315f584831e5721245e6f6280d -mindepth 1 | sort | while read FILE
                                                                     do
