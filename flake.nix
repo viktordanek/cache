@@ -96,7 +96,6 @@
                                                                             exec 200> ${ directory }/${ environment-variable hash }.lock &&
                                                                             if ${ pkgs.flock }/bin/flock 200
                                                                             then
-                                                                                ${ pkgs.coreutils }/bin/echo AAA 0001100 >> /build/debug &&
                                                                                 if [ ! -d ${ directory }/${ environment-variable hash } ]
                                                                                 then
                                                                                     ${ pkgs.coreutils }/bin/echo AAA 0001110 >> /build/debug &&
