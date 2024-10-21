@@ -98,7 +98,6 @@
                                                                             then
                                                                                 if [ ! -d ${ directory }/${ environment-variable hash } ]
                                                                                 then
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001110 >> /build/debug &&
                                                                                     ${ pkgs.coreutils }/bin/mkdir ${ directory }/${ environment-variable hash } &&
                                                                                     ${ pkgs.coreutils }/bin/echo AAA 0001111 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ directory }/${ environment-variable hash }/arguments.asc &&
