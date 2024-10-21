@@ -229,7 +229,6 @@
                                                                                         { pkgs , ... } : target :
                                                                                             ''
                                                                                                 ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
-                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable target } > ${ environment-variable target }/init.target.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/init.arguments.asc &&
                                                                                                     if ${ has-standard-input }
                                                                                                     then
@@ -262,29 +261,21 @@
                                                                 } ;
                                                         test =
                                                             ''
-                                                                test ( )
+                                                                test_diff ( )
                                                                     {
-                                                                        echo fail wtf
+                                                                        ${ pkgs.coreutils }/bin/echo assert_equals "" "$\( ${ pkgs.diffutils }/bin/diff --recursive ${ environment-variable "EXPECTED_DIRECTORY" } ${ environment-variable "OBSERVED_DIRECTORY" } \)" "The expected and observed directories should match exactly." &&
+                                                                        assert_equals "" "$( ${ pkgs.diffutils }/bin/diff --brief --recursive ${ environment-variable "EXPECTED_DIRECTORY" } ${ environment-variable "OBSERVED_DIRECTORY" } )" "The expected and observed directories should match exactly."
                                                                     }
                                                             '' ;
                                                         in
                                                             ''
-                                                                export EXPECTED_DIRECTORY=$out &&
-                                                                    ${ pkgs.coreutils }/bin/echo EXPECTED_DIRECTORY=${ environment-variable "EXPECTED_DIRECTORY" } &&
-                                                                    if [ -f ${ pkgs.at }/bin/at ]
-                                                                    then
-                                                                        ${ pkgs.coreutils }/bin/echo HAS AT
-                                                                    else
-                                                                        ${ pkgs.coreutils }/bin/echo DOES NOT HAVE AT
-                                                                    fi &&
-                                                                    # ${ pkgs.which }/bin/which at &&
-                                                                    ${ pkgs.coreutils }/bin/echo alpha=${ resource.alpha } &&
+                                                                export OBSERVED_DIRECTORY=$out &&
                                                                     ${ pkgs.coreutils }/bin/mkdir /build/328c9d7ba28416ac686ff86392fd1870763ff682 &&
                                                                     ${ pkgs.coreutils }/bin/mkdir /build/gbruksaJ.27aab8b58c44dd9fd9e4f2d642b1862c94a793c8 &&
                                                                     ${ pkgs.coreutils }/bin/mkdir /build/fc1F9nGN.27aab8b58c44dd9fd9e4f2d642b1862c94a793c8 &&
-                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "EXPECTED_DIRECTORY" } &&
-                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "EXPECTED_DIRECTORY" }/alpha &&
-                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "EXPECTED_DIRECTORY" }/alpha/0 &&
+                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" } &&
+                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/alpha &&
+                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/alpha/0 &&
                                                                     ${ pkgs.coreutils }/bin/echo BEFORE ALPHA ${ resource.alpha } &&
                                                                     if ALPHA=$( ${ pkgs.coreutils }/bin/echo 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource.alpha } af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 )
                                                                     then
@@ -305,7 +296,8 @@
                                                                         fi
                                                                     done &&
                                                                     ${ pkgs.coreutils }/bin/echo ALPHA=${ environment-variable "ALPHA" } &&
-                                                                    ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "ALPHA" } ${ environment-variable "EXPECTED_DIRECTORY" }/alpha/0 &&
+                                                                    ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "ALPHA" } ${ environment-variable "OBSERVED_DIRECTORY" }/alpha/0 &&
+                                                                    export EXPECTED_DIRECTORY=${ ./expected } &&
                                                                     ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
                                                             '' ;
                                             } ;
