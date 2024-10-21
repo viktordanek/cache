@@ -259,14 +259,40 @@
                                                                         } ;
                                                                     timestamp = "c9e48583e0eb029b6c6feeedf011cd26ae1fb5e6a7cf6ec6a06f263284e5a57217b71a32647e6dfc33b3d4ea275ff4c1e644d11de7bde89ac7edd60fff5ba1f8" ;
                                                                 } ;
-                                                        test =
-                                                            ''
-                                                                test_diff ( )
-                                                                    {
-                                                                        ${ pkgs.coreutils }/bin/echo assert_equals "" "$\( ${ pkgs.diffutils }/bin/diff --recursive ${ environment-variable "EXPECTED_DIRECTORY" } ${ environment-variable "OBSERVED_DIRECTORY" } \)" "The expected and observed directories should match exactly." &&
-                                                                        assert_equals "" "$( ${ pkgs.diffutils }/bin/diff --brief --recursive ${ environment-variable "EXPECTED_DIRECTORY" } ${ environment-variable "OBSERVED_DIRECTORY" } )" "The expected and observed directories should match exactly."
-                                                                    }
-                                                            '' ;
+                                                            test =
+                                                                ''
+                                                                    test_diff ( )
+                                                                        {
+                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "OBSERVED_DIRECTORY" } &&
+                                                                                assert_equals "" "$( ${ pkgs.diffutils }/bin/diff --brief --recursive ${ environment-variable "EXPECTED_DIRECTORY" } ${ environment-variable "OBSERVED_DIRECTORY" } )" "We expect expected to exactly equal observed."
+                                                                        } &&
+                                                                            test_expected_observed ( )
+                                                                                {
+                                                                                    ${ pkgs.findutils }/bin/find ${ environment-variable "EXPECTED_DIRECTORY" } -type f | while read EXPECTED_FILE
+                                                                                    do
+                                                                                        RELATIVE=$( ${ pkgs.coreutils }/bin/realpath --relative-to ${ environment-variable "EXPECTED_DIRECTORY" } ${ environment-variable "EXPECTED_FILE" } ) &&
+                                                                                            OBSERVED_FILE=${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "RELATIVE" } &&
+                                                                                            if [ ! -f ${ environment-variable "OBSERVED_FILE" } ]
+                                                                                            then
+                                                                                                fail "The observed file for ${ environment-variable "RELATIVE" } does not exist."
+                                                                                            fi &&
+                                                                                            assert_equals "$( ${ pkgs.coreutils }/bin/cat ${ environment-variable "EXPECTED_FILE" } )" "$( ${ pkgs.coreutils }/bin/cat ${ environment-variable "OBSERVED_FILE" } )" "The expected file does not equal the observed file for ${ environment-variable "RELATIVE" }."
+                                                                                    done
+                                                                                } &&
+                                                                            test_observed_expected ( )
+                                                                                {
+                                                                                    ${ pkgs.findutils }/bin/find ${ environment-variable "OBSERVED_DIRECTORY" } -type f | while read OBSERVED_FILE
+                                                                                    do
+                                                                                        RELATIVE=$( ${ pkgs.coreutils }/bin/realpath --relative-to ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "OBSERVED_FILE" } ) &&
+                                                                                            EXPECTED_FILE=${ environment-variable "EXPECTED_DIRECTORY" }/${ environment-variable "RELATIVE" } &&
+                                                                                            if [ ! -f ${ environment-variable "EXPECTED_FILE" } ]
+                                                                                            then
+                                                                                                fail "The expected file for ${ environment-variable "RELATIVE" } does not exist."
+                                                                                            fi &&
+                                                                                            assert_equals "$( ${ pkgs.coreutils }/bin/cat ${ environment-variable "EXPECTED_FILE" } )" "$( ${ pkgs.coreutils }/bin/cat ${ environment-variable "OBSERVED_FILE" } )" "The observed file does not equal the expected file for ${ environment-variable "RELATIVE" }."
+                                                                                    done
+                                                                                }
+                                                                '' ;
                                                         in
                                                             ''
                                                                 export OBSERVED_DIRECTORY=$out &&
