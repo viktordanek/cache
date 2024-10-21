@@ -118,7 +118,6 @@
                                                                                            ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) &&
                                                                                                 exit ${ builtins.toString preparation-error-code }
                                                                                         fi
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 000111F >> /build/debug
                                                                                 fi &&
                                                                                 ${ pkgs.coreutils }/bin/echo AAA 0001120 >> /build/debug &&
                                                                                 if [ ! -f ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash ]
