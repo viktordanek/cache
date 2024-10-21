@@ -304,7 +304,6 @@
                                                                             ${ pkgs.coreutils }/bin/cat ${ environment-variable "FILE" }
                                                                         fi
                                                                     done &&
-                                                                    ${ pkgs.coreutils }/bin/echo AFTER DEBUG &&
                                                                     ${ pkgs.coreutils }/bin/echo ALPHA=${ environment-variable "ALPHA" } &&
                                                                     ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "ALPHA" } ${ environment-variable "EXPECTED_DIRECTORY" }/alpha/0 &&
                                                                     ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
