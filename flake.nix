@@ -99,27 +99,16 @@
                                                                                 if [ ! -d ${ directory }/${ environment-variable hash } ]
                                                                                 then
                                                                                     ${ pkgs.coreutils }/bin/mkdir ${ directory }/${ environment-variable hash } &&
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001111 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ directory }/${ environment-variable hash }/arguments.asc &&
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001112 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ directory }/${ environment-variable hash }/has-standard-input.asc &&
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001113 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ directory }/${ environment-variable hash }/standard-input.asc &&
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001114 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "EXPIRY" } > ${ directory }/${ environment-variable hash }/expiry.asc &&
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001115 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ if cache.force then "true" else "false" } > ${ directory }/${ environment-variable hash }/force.asc &&
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001116 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ cache.provision } ${ directory }/${ environment-variable hash }/provision.sh &&
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001117 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ pkgs.writeShellScript "prepare" prepare } ${ directory }/${ environment-variable hash }/prepare.sh &&
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001118 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ pkgs.writeShellScript "evict" evict } ${ directory }/${ environment-variable hash }/evict.sh &&
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001119 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/arguments.asc ${ directory }/${ environment-variable hash }/has-standard-input.asc ${ directory }/${ environment-variable hash }/standard-input.asc ${ directory }/${ environment-variable hash }/expiry.asc ${ directory }/${ environment-variable hash }/force.asc &&
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 000111A >> /build/debug &&
-                                                                                        ${ pkgs.coreutils }/bin/echo "${ directory }/${ environment-variable hash }/prepare.sh" | ${ at } now >> /build/debug 2>&1 &&
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 000111B >> /build/debug &&
+                                                                                        ${ pkgs.coreutils }/bin/echo "${ directory }/${ environment-variable hash }/prepare.sh" | ${ at } now >> /dev/null 2>&1 &&
                                                                                         ${ pkgs.coreutils }/bin/echo BEFORE ${ pkgs.coreutils }/bin/sleep 1 >> /build/debug 2>&1 &&
                                                                                         ${ pkgs.coreutils }/bin/sleep 1 >> /build/debug 2>&1 &&
                                                                                         ${ pkgs.coreutils }/bin/echo AFTER ${ pkgs.coreutils }/bin/sleep 1 >> /build/debug 2>&1 &&
