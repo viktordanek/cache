@@ -131,7 +131,6 @@
                                                                                 fi &&
                                                                                 ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/out
                                                                             else
-                                                                                ${ pkgs.coreutils }/bin/echo AAA 0001200 >> /build/debug &&
                                                                                 exit ${ builtins.toString lock-error-code }
                                                                             fi
                                                                     '' ;
