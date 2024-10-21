@@ -302,26 +302,12 @@
                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" } &&
                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/alpha &&
                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/alpha/0 &&
-                                                                    ${ pkgs.coreutils }/bin/echo BEFORE ALPHA ${ resource.alpha } &&
                                                                     if ALPHA=$( ${ pkgs.coreutils }/bin/echo 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource.alpha } af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 )
                                                                     then
                                                                         ${ pkgs.coreutils }/bin/echo SUCCESS
                                                                     else
                                                                         ${ pkgs.coreutils }/bin/echo FAILURE
                                                                     fi &&
-                                                                    ${ pkgs.findutils }/bin/find /build/ -maxdepth 2 &&
-                                                                    ${ pkgs.findutils }/bin/find /build/328c9d7ba28416ac686ff86392fd1870763ff682 /build/*.62f7ff21050af91d081b577d4ce480f8c94b98e1 /build/*.ce6807e0feab65315f584831e5721245e6f6280d -mindepth 1 | sort | while read FILE
-                                                                    do
-                                                                        ${ pkgs.coreutils }/bin/echo &&
-                                                                        ${ pkgs.coreutils }/bin/echo "===========================" &&
-                                                                        ${ pkgs.coreutils }/bin/dirname ${ environment-variable "FILE" } &&
-                                                                        ${ pkgs.coreutils }/bin/basename ${ environment-variable "FILE" } &&
-                                                                        if [ ! -d ${ environment-variable "FILE" } ]
-                                                                        then
-                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "FILE" }
-                                                                        fi
-                                                                    done &&
-                                                                    ${ pkgs.coreutils }/bin/echo ALPHA=${ environment-variable "ALPHA" } &&
                                                                     ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "ALPHA" } ${ environment-variable "OBSERVED_DIRECTORY" }/alpha/0 &&
                                                                     export EXPECTED_DIRECTORY=${ ./expected } &&
                                                                     ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
