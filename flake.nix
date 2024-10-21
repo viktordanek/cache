@@ -113,7 +113,6 @@
                                                                                         # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
                                                                                         # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
                                                                                         # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
-                                                                                    ${ pkgs.findutils }/bin/find ${ directory }/${ environment-variable hash } >> /build/debug &&
                                                                                         if [ $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) != 0 ]
                                                                                         then
                                                                                     ${ pkgs.coreutils }/bin/echo AAA 000111E $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) >> /build/debug &&
