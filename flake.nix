@@ -129,8 +129,7 @@
                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "PARENT_PID" } > ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid &&
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid
                                                                                 fi &&
-                                                                                ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/out &&
-                                                                                ${ pkgs.coreutils }/bin/echo AAA 0001150 >> /build/debug
+                                                                                ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/out
                                                                             else
                                                                                 ${ pkgs.coreutils }/bin/echo AAA 0001200 >> /build/debug &&
                                                                                 exit ${ builtins.toString lock-error-code }
