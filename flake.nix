@@ -64,15 +64,15 @@
                                                                             at = at ;
                                                                             invalid-script-throw = invalid-script-throw ;
                                                                             invalid-temporary-throw = invalid-temporary-throw ;
-                                                                            mask-reference = "/tmp/*.27aab8b58c44dd9fd9e4f2d642b1862c94a793c8" ;
+                                                                            # mask-reference = "/tmp/*.27aab8b58c44dd9fd9e4f2d642b1862c94a793c8" ;
                                                                             out = "b8130c9c6908f0c6bda2b92d8e145c537304412410ef9e86773688b0c3801869f1209a933f0f8dad4c900cfebcb37a986319a81e003ce7dc24c20249029dcf41" ;
                                                                             resource = "b7525e1989f7c9828bf8f80706fc2cb52d8af2127d9bdc07f09af5f93901236eae001d620466b59ced64156531715778c4a59ec713e797ebb9bbfa64d06966db" ;
                                                                             target = "c9288b6c7ba6701be9f06896c2af5d0402b8893b138ac810b84fbe70f041962a15e11251c9f55741ad4ea09f2f37f1570bdc579029e47c22a34fd14a89566344" ;
                                                                             scripts = scripts ;
                                                                             secondary = secondary ;
                                                                             temporary = temporaryX ;
-                                                                            temporary-resource-directory = "${ pkgs.coreutils }/bin/mktemp -t XXXXXXXX.27aab8b58c44dd9fd9e4f2d642b1862c94a793c8" ;
-                                                                            temporary-broken-directory = "${ pkgs.coreutils }/bin/mktemp -t XXXXXXXX.4220e8baf832809cb6a27e0e5709ba4b8a94046b" ;
+                                                                            # temporary-resource-directory = "${ pkgs.coreutils }/bin/mktemp -t XXXXXXXX.27aab8b58c44dd9fd9e4f2d642b1862c94a793c8" ;
+                                                                            # temporary-broken-directory = "${ pkgs.coreutils }/bin/mktemp -t XXXXXXXX.4220e8baf832809cb6a27e0e5709ba4b8a94046b" ;
                                                                         } ;
                                                                 in
                                                                     ''
@@ -91,42 +91,74 @@
                                                                             fi &&
                                                                             EXPIRY=$(( ( ${ builtins.toString cache.life } * ( ${ environment-variable timestamp } / ${ builtins.toString cache.life } ) ) + ${ builtins.toString cache.life } )) &&
                                                                             export ${ hash }=$( ${ pkgs.coreutils }/bin/echo $( ${ pkgs.coreutils }/bin/whoami ) ${ environment-variable "EXPIRY" } ${ builtins.hashString "sha512" ( builtins.concatStringsSep "-" ( builtins.concatLists [ path [ name cache.provision ( builtins.toString cache.life ) ( builtins.toString cache.force ) salt ] ] ) ) } ${ environment-variable "ARGUMENTS" } ${ environment-variable "HAS_STANDARD_INPUT" } ${ environment-variable "STANDARD_INPUT" } | ${ pkgs.coreutils }/bin/sha512sum | ${ pkgs.coreutils }/bin/cut --bytes -128 ) &&
+                                                                            ${ pkgs.coreutils }/bin/echo AAA 0001000 >> /build/debug &&
                                                                             exec 200> ${ directory }/${ environment-variable hash }.lock &&
                                                                             if ${ pkgs.flock }/bin/flock 200
                                                                             then
+                                                                                ${ pkgs.coreutils }/bin/echo AAA 0001100 >> /build/debug &&
                                                                                 if [ ! -d ${ directory }/${ environment-variable hash } ]
                                                                                 then
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001110 >> /build/debug &&
                                                                                     ${ pkgs.coreutils }/bin/mkdir ${ directory }/${ environment-variable hash } &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001111 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ directory }/${ environment-variable hash }/arguments.asc &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001112 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ directory }/${ environment-variable hash }/has-standard-input.asc &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001113 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ directory }/${ environment-variable hash }/standard-input.asc &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001114 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ environment-variable "EXPIRY" } > ${ directory }/${ environment-variable hash }/expiry.asc &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001115 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo ${ if cache.force then "true" else "false" } > ${ directory }/${ environment-variable hash }/force.asc &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001116 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ cache.provision } ${ directory }/${ environment-variable hash }/provision.sh &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001117 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ pkgs.writeShellScript "prepare" prepare } ${ directory }/${ environment-variable hash }/prepare.sh &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001118 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ pkgs.writeShellScript "evict" evict } ${ directory }/${ environment-variable hash }/evict.sh &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 0001119 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/arguments.asc ${ directory }/${ environment-variable hash }/has-standard-input.asc ${ directory }/${ environment-variable hash }/standard-input.asc ${ directory }/${ environment-variable hash }/expiry.asc ${ directory }/${ environment-variable hash }/force.asc &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 000111A >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/echo "${ directory }/${ environment-variable hash }/prepare.sh" | ${ at } now > /dev/null 2>&1 &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 000111B >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/sleep 10 &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 000111C >> /build/debug &&
                                                                                         # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 000111D >> /build/debug &&
+                                                                                    ${ pkgs.findutils }/bin/find ${ directory }/${ environment-variable hash } >> /build/debug &&
                                                                                         if [ $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) != 0 ]
                                                                                         then
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 000111E $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) >> /build/debug &&
+                                                                                            ${ pkgs.coreutils }/bin/echo ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) >> /build/debug &&
+                                                                                    ${ pkgs.findutils }/bin/find ${ directory }/${ environment-variable hash } -mindepth 1 | while read FILE
+                                                                                     do
+                                                                                        ${ pkgs.coreutils }/bin/echo &&
+                                                                                            ${ pkgs.coreutils }/bin/basename ${ environment-variable "FILE" } &&
+                                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "FILE" }
+                                                                                     done >> /build/debug &&
                                                                                             ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) &&
                                                                                                 exit ${ builtins.toString preparation-error-code }
                                                                                         fi
+                                                                                    ${ pkgs.coreutils }/bin/echo AAA 000111F >> /build/debug
                                                                                 fi &&
+                                                                                ${ pkgs.coreutils }/bin/echo AAA 0001120 >> /build/debug &&
                                                                                 if [ ! -f ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash ]
                                                                                 then
                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "PARENT_HASH" } > ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash &&
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash
                                                                                 fi &&
+                                                                                ${ pkgs.coreutils }/bin/echo AAA 0001130 >> /build/debug &&
                                                                                 if [ ! -f ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid ]
                                                                                 then
                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "PARENT_PID" } > ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid &&
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid
                                                                                 fi &&
-                                                                                ${ pkgs.coreutils }/bin/readlink ${ directory }/${ environment-variable hash }/link
+                                                                                ${ pkgs.coreutils }/bin/echo AAA 0001140 >> /build/debug &&
+                                                                                ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/out >> /build/debug &&
+                                                                                ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/out &&
+                                                                                ${ pkgs.coreutils }/bin/echo AAA 0001150 >> /build/debug
                                                                             else
+                                                                                ${ pkgs.coreutils }/bin/echo AAA 0001200 >> /build/debug &&
                                                                                 exit ${ builtins.toString lock-error-code }
                                                                             fi
                                                                     '' ;
@@ -179,11 +211,18 @@
                                                         resource =
                                                             lib
                                                                 {
-                                                                    # at =
-                                                                    #     pkgs.writeShellScript
-                                                                    #        "at"
-                                                                    #        ''
-                                                                    #        '' ;
+                                                                    at =
+                                                                        pkgs.writeShellScript
+                                                                            "at"
+                                                                            ''
+                                                                                COMMAND=$( ${ pkgs.coreutils }/bin/tee ) &&
+                                                                                    if [ -z "${ environment-variable "COMMAND" }" ]
+                                                                                    then
+                                                                                        ${ pkgs.coreutils }/bin/false
+                                                                                    else
+                                                                                        ${ pkgs.bash }/bin/bash -c "${ environment-variable "COMMAND" }" &
+                                                                                    fi
+                                                                            '' ;
                                                                     cache =
                                                                         {
                                                                             alpha = temporary : { provision = "${ temporary }/temporary/alpha" ; life = 2 ; force = false ; } ;
@@ -228,12 +267,17 @@
                                                             ''
                                                                 test ( )
                                                                     {
-                                                                        ${ pkgs.coreutils }/bin/echo fail wtf
+                                                                        fail wtf
                                                                     }
                                                             '' ;
                                                         in
                                                             ''
-                                                                export EXPECTED_DIRECTORY=$out &&
+                                                                cleanup ( )
+                                                                    {
+                                                                        ${ pkgs.coreutils }/bin/cat /build/debug
+                                                                    } &&
+                                                                    trap cleanup EXIT &&
+                                                                    export EXPECTED_DIRECTORY=$out &&
                                                                     ${ pkgs.coreutils }/bin/echo EXPECTED_DIRECTORY=${ environment-variable "EXPECTED_DIRECTORY" } &&
                                                                     if [ -f ${ pkgs.at }/bin/at ]
                                                                     then
@@ -244,11 +288,22 @@
                                                                     # ${ pkgs.which }/bin/which at &&
                                                                     ${ pkgs.coreutils }/bin/echo alpha=${ resource.alpha } &&
                                                                     ${ pkgs.coreutils }/bin/mkdir /build/328c9d7ba28416ac686ff86392fd1870763ff682 &&
+                                                                    ${ pkgs.coreutils }/bin/mkdir /build/gbruksaJ.27aab8b58c44dd9fd9e4f2d642b1862c94a793c8 &&
+                                                                    ${ pkgs.coreutils }/bin/mkdir /build/fc1F9nGN.27aab8b58c44dd9fd9e4f2d642b1862c94a793c8 &&
                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "EXPECTED_DIRECTORY" } &&
                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "EXPECTED_DIRECTORY" }/alpha &&
                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "EXPECTED_DIRECTORY" }/alpha/0 &&
-                                                                    ALPHA=$( ${ pkgs.coreutils }/bin/echo 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource.alpha } af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 ) &&
-                                                                    ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "ALPHA" } ${ environment-variable "EXPECTED_DIRECTORY" }/alpha/0
+                                                                    ${ pkgs.coreutils }/bin/echo BEFORE ALPHA ${ resource.alpha } &&
+                                                                    if ALPHA=$( ${ pkgs.coreutils }/bin/echo 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource.alpha } af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 )
+                                                                    then
+                                                                        ${ pkgs.coreutils }/bin/echo SUCCESS
+                                                                    else
+                                                                        ${ pkgs.coreutils }/bin/echo FAILURE
+                                                                    fi &&
+                                                                    ${ pkgs.coreutils }/bin/echo AFTER ALPHA ALPHA=${ environment-variable "ALPHA" } &&
+                                                                    ${ pkgs.findutils }/bin/find $( ${ pkgs.coreutils }/bin/dirname ${ environment-variable "ALPHA" } ) -mindepth 1 -type f -exec cat {} \; &&
+                                                                    ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "ALPHA" } ${ environment-variable "EXPECTED_DIRECTORY" }/alpha/0 &&
+                                                                    ${ pkgs.coreutils }/bin/echo ALPHA=${ environment-variable "ALPHA" } &&
                                                                     export PATH=${ pkgs.coreutils }/bin:${ environment-variable "PATH" } &&
                                                                     ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
                                                             '' ;
