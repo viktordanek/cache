@@ -112,7 +112,7 @@
                                                                                         ${ pkgs.coreutils }/bin/sleep 1 &&
                                                                                         # ${ pkgs.inotify-tools }/bin/inotifywait --quiet --event create ${ directory }/${ environment-variable hash } &&
                                                                                         # ${ pkgs.inotify-tools }/bin/inotifywait --quiet --event create ${ directory }/${ environment-variable hash } &&
-                                                                                        # ${ pkgs.inotify-tools }/bin/inotifywait --quiet --event create ${ directory }/${ environment-variable hash } &&
+                                                                                        #  ${ pkgs.inotify-tools }/bin/inotifywait --quiet --event create ${ directory }/${ environment-variable hash } &&
                                                                                         if [ $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) != 0 ]
                                                                                         then
                                                                                            ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) &&
