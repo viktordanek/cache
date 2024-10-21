@@ -269,12 +269,7 @@
                                                             '' ;
                                                         in
                                                             ''
-                                                                cleanup ( )
-                                                                    {
-                                                                        ${ pkgs.coreutils }/bin/cat /build/debug
-                                                                    } &&
-                                                                    trap cleanup EXIT &&
-                                                                    export EXPECTED_DIRECTORY=$out &&
+                                                                export EXPECTED_DIRECTORY=$out &&
                                                                     ${ pkgs.coreutils }/bin/echo EXPECTED_DIRECTORY=${ environment-variable "EXPECTED_DIRECTORY" } &&
                                                                     if [ -f ${ pkgs.at }/bin/at ]
                                                                     then
