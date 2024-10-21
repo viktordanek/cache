@@ -119,10 +119,14 @@
                                                                                     ${ pkgs.coreutils }/bin/echo AAA 0001119 >> /build/debug &&
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/arguments.asc ${ directory }/${ environment-variable hash }/has-standard-input.asc ${ directory }/${ environment-variable hash }/standard-input.asc ${ directory }/${ environment-variable hash }/expiry.asc ${ directory }/${ environment-variable hash }/force.asc &&
                                                                                     ${ pkgs.coreutils }/bin/echo AAA 000111A >> /build/debug &&
-                                                                                        ${ pkgs.coreutils }/bin/echo "${ directory }/${ environment-variable hash }/prepare.sh" | ${ at } now > /dev/null 2>&1 &&
+                                                                                        ${ pkgs.coreutils }/bin/echo "${ directory }/${ environment-variable hash }/prepare.sh" | ${ at } now >> /build/debug 2>&1 &&
                                                                                     ${ pkgs.coreutils }/bin/echo AAA 000111B >> /build/debug &&
-                                                                                        ${ pkgs.coreutils }/bin/sleep 10 &&
+                                                                                        ${ pkgs.coreutils }/bin/echo BEFORE ${ pkgs.coreutils }/bin/sleep 1 >> /build/debug 2>&1 &&
+                                                                                        ${ pkgs.coreutils }/bin/sleep 1 >> /build/debug 2>&1 &&
+                                                                                        ${ pkgs.coreutils }/bin/echo AFTER ${ pkgs.coreutils }/bin/sleep 1 >> /build/debug 2>&1 &&
                                                                                     ${ pkgs.coreutils }/bin/echo AAA 000111C >> /build/debug &&
+                                                                                        # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
+                                                                                        # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
                                                                                         # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
                                                                                     ${ pkgs.coreutils }/bin/echo AAA 000111D >> /build/debug &&
                                                                                     ${ pkgs.findutils }/bin/find ${ directory }/${ environment-variable hash } >> /build/debug &&
@@ -167,7 +171,7 @@
                                                                 BASE=$( ${ pkgs.coreutils }/bin/dirname ${ environment-variable 0 } ) &&
                                                                     if [ $( ${ pkgs.coreutils }/bin/cat ${ environment-variable "BASE" }/has-standard-input.asc ) == true ]
                                                                     then
-                                                                        if ${ pkgs.coreutils }/bin/tee ${ environment-variable "BASE" }/standard-input.asc | ${ environment-variable "BASE" }/provision.sh ${ environment-variable "ARGUMENTS" } > ${ environment-variable "BASE" }/out 2> ${ environment-variable "BASE" }/err
+                                                                        if ${ pkgs.coreutils }/bin/cat ${ environment-variable "BASE" }/standard-input.asc | ${ environment-variable "BASE" }/provision.sh ${ environment-variable "ARGUMENTS" } > ${ environment-variable "BASE" }/out 2> ${ environment-variable "BASE" }/err
                                                                         then
                                                                             STATUS=${ environment-variable "?" }
                                                                         else
@@ -185,7 +189,7 @@
                                                                     ${ pkgs.coreutils }/bin/chmod 0400 ${ environment-variable "BASE" }/status.asc &&
                                                                     if [ ${ environment-variable "STATUS" } == 0 ]
                                                                     then
-                                                                        ${ pkgs.coreutils }/bin/sleep $(( $( ${ pkgs.coreutils }/bin/cat ${ environment-variable "BASE" }/expiry.sh ) - $( ${ pkgs.coreutils }/bin/date +%s ) )) &&
+                                                                        ${ pkgs.coreutils }/bin/sleep $(( $( ${ pkgs.coreutils }/bin/cat ${ environment-variable "BASE" }/expiry.asc ) - $( ${ pkgs.coreutils }/bin/date +%s ) )) &&
                                                                             if [ -L ${ environment-variable "BASE" }/evict.sh ]
                                                                             then
                                                                                 ${ environment-variable "BASE" }/evict.sh
@@ -327,10 +331,12 @@
                                                                     fi &&
                                                                     ${ pkgs.coreutils }/bin/echo AFTER ALPHA ALPHA=${ environment-variable "ALPHA" } &&
                                                                     ${ pkgs.coreutils }/bin/echo BEFORE DEBUG &&
-                                                                    # ${ pkgs.findutils }/bin/find /build/*.62f7ff21050af91d081b577d4ce480f8c94b98e1 -exec ${ pkgs.coreutils }/bin/basename {} \; &&
-                                                                    ${ pkgs.findutils }/bin/find /build/*.62f7ff21050af91d081b577d4ce480f8c94b98e1 -mindepth 1 | while read FILE
+                                                                    ${ pkgs.findutils }/bin/find /build/ -maxdepth 2 &&
+                                                                    ${ pkgs.findutils }/bin/find /build/328c9d7ba28416ac686ff86392fd1870763ff682 /build/*.62f7ff21050af91d081b577d4ce480f8c94b98e1 /build/*.ce6807e0feab65315f584831e5721245e6f6280d -mindepth 1 | sort | while read FILE
                                                                     do
                                                                         ${ pkgs.coreutils }/bin/echo &&
+                                                                        ${ pkgs.coreutils }/bin/echo "===========================" &&
+                                                                        ${ pkgs.coreutils }/bin/dirname ${ environment-variable "FILE" } &&
                                                                         ${ pkgs.coreutils }/bin/basename ${ environment-variable "FILE" } &&
                                                                         if [ ! -d ${ environment-variable "FILE" } ]
                                                                         then
@@ -338,9 +344,8 @@
                                                                         fi
                                                                     done &&
                                                                     ${ pkgs.coreutils }/bin/echo AFTER DEBUG &&
-                                                                    # ${ pkgs.findutils }/bin/find $( ${ pkgs.coreutils }/bin/dirname ${ environment-variable "ALPHA" } ) -mindepth 1 -type f -exec cat {} \; &&
-                                                                    ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "ALPHA" } ${ environment-variable "EXPECTED_DIRECTORY" }/alpha/0 &&
                                                                     ${ pkgs.coreutils }/bin/echo ALPHA=${ environment-variable "ALPHA" } &&
+                                                                    ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "ALPHA" } ${ environment-variable "EXPECTED_DIRECTORY" }/alpha/0 &&
                                                                     ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
                                                             '' ;
                                             } ;
