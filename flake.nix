@@ -253,8 +253,33 @@
                                                                                     '' ;
                                                                             in
                                                                                 {
-                                                                                    init = model "init" ;
-                                                                                    release = model "release" ;
+                                                                                    init =
+                                                                                        { pkgs , ... } : target :
+                                                                                            ''
+                                                                                                ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable target } > ${ environment-variable target }/init.target.asc &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/init.arguments.asc &&
+                                                                                                    if ${ has-standard-input }
+                                                                                                    then
+                                                                                                        ${ pkgs.coreutils }/bin/echo true > ${ environment-variable target }/init.has-standard-input.asc &&
+                                                                                                            ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/init.standard-input.asc
+                                                                                                    else
+                                                                                                        ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/init.has-standard-input.asc
+                                                                                                    fi
+                                                                                            '' ;
+                                                                                    release =
+                                                                                        { pkgs , ... } : target :
+                                                                                            ''
+                                                                                                ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/release.arguments.asc &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable target } > ${ environment-variable target }/release.target.asc &&
+                                                                                                    if ${ has-standard-input }
+                                                                                                    then
+                                                                                                        ${ pkgs.coreutils }/bin/echo true > ${ environment-variable target }/release.has-standard-input.asc &&
+                                                                                                            ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/release.standard-input.asc
+                                                                                                    else
+                                                                                                        ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/release.has-standard-input.asc
+                                                                                                    fi
+                                                                                            '' ;
                                                                                 } ;
                                                                     secondary = { pkgs = pkgs ; } ;
                                                                     temporaryX =
@@ -267,7 +292,7 @@
                                                             ''
                                                                 test ( )
                                                                     {
-                                                                        fail wtf
+                                                                        echo fail wtf
                                                                     }
                                                             '' ;
                                                         in
@@ -301,10 +326,21 @@
                                                                         ${ pkgs.coreutils }/bin/echo FAILURE
                                                                     fi &&
                                                                     ${ pkgs.coreutils }/bin/echo AFTER ALPHA ALPHA=${ environment-variable "ALPHA" } &&
-                                                                    ${ pkgs.findutils }/bin/find $( ${ pkgs.coreutils }/bin/dirname ${ environment-variable "ALPHA" } ) -mindepth 1 -type f -exec cat {} \; &&
+                                                                    ${ pkgs.coreutils }/bin/echo BEFORE DEBUG &&
+                                                                    # ${ pkgs.findutils }/bin/find /build/*.62f7ff21050af91d081b577d4ce480f8c94b98e1 -exec ${ pkgs.coreutils }/bin/basename {} \; &&
+                                                                    ${ pkgs.findutils }/bin/find /build/*.62f7ff21050af91d081b577d4ce480f8c94b98e1 -mindepth 1 | while read FILE
+                                                                    do
+                                                                        ${ pkgs.coreutils }/bin/echo &&
+                                                                        ${ pkgs.coreutils }/bin/basename ${ environment-variable "FILE" } &&
+                                                                        if [ ! -d ${ environment-variable "FILE" } ]
+                                                                        then
+                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "FILE" }
+                                                                        fi
+                                                                    done &&
+                                                                    ${ pkgs.coreutils }/bin/echo AFTER DEBUG &&
+                                                                    # ${ pkgs.findutils }/bin/find $( ${ pkgs.coreutils }/bin/dirname ${ environment-variable "ALPHA" } ) -mindepth 1 -type f -exec cat {} \; &&
                                                                     ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "ALPHA" } ${ environment-variable "EXPECTED_DIRECTORY" }/alpha/0 &&
                                                                     ${ pkgs.coreutils }/bin/echo ALPHA=${ environment-variable "ALPHA" } &&
-                                                                    export PATH=${ pkgs.coreutils }/bin:${ environment-variable "PATH" } &&
                                                                     ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
                                                             '' ;
                                             } ;
