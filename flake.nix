@@ -115,14 +115,7 @@
                                                                                         # ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } &&
                                                                                         if [ $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) != 0 ]
                                                                                         then
-                                                                                    ${ pkgs.coreutils }/bin/echo AAA 000111E $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) >> /build/debug &&
                                                                                             ${ pkgs.coreutils }/bin/echo ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) >> /build/debug &&
-                                                                                    ${ pkgs.findutils }/bin/find ${ directory }/${ environment-variable hash } -mindepth 1 | while read FILE
-                                                                                     do
-                                                                                        ${ pkgs.coreutils }/bin/echo &&
-                                                                                            ${ pkgs.coreutils }/bin/basename ${ environment-variable "FILE" } &&
-                                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "FILE" }
-                                                                                     done >> /build/debug &&
                                                                                             ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) &&
                                                                                                 exit ${ builtins.toString preparation-error-code }
                                                                                         fi
