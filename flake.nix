@@ -282,11 +282,14 @@
                                                                 ''
                                                                     NAME=${ environment-variable 1 } &&
                                                                         OBJECT=${ environment-variable 2 } &&
+                                                                        exec 200> ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
+                                                                        ${ pkgs.flock }/bin/flock 200 &&
                                                                         ${ pkgs.coreutils }/bin/echo "RECORDING ${ environment-variable "NAME" }=${ environment-variable "OBJECT" }" &&
                                                                         ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } &&
                                                                         ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0 &&
                                                                         ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0 &&
-                                                                        ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-signal" record-signal } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" | ${ at } now
+                                                                        ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-signal" record-signal } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" | ${ at } now  > /dev/null 2>&1 &&
+                                                                        ${ pkgs.coreutils }/bin/rm ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock
                                                                 '' ;
                                                             record-signal =
                                                                 ''
@@ -295,9 +298,13 @@
                                                                         OBJECT=${ environment-variable 3 } &&
                                                                         ${ pkgs.inotify-tools }/bin/inotifywait --monitor --event modify ${ environment-variable "OBJECT" }/signal --format "%w%f" | while read SIGNAL_FILE
                                                                         do
-                                                                            INDEX=$( ${ pkgs.findutils }/bin/find ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } -mindepth 1 -maxdepth 1 -type d | ${ pkgs.coreutils }/bin/wc --lines ) &&
+                                                                            exec 200> ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
+                                                                                ${ pkgs.flock }/bin/flock 200 &&
+                                                                                INDEX=$( ${ pkgs.findutils }/bin/find ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } -mindepth 1 -maxdepth 1 -type d | ${ pkgs.coreutils }/bin/wc --lines ) &&
                                                                                 ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" } &&
-                                                                                ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" }
+                                                                                ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" } &&
+                                                                                ${ pkgs.coreutils }/bin/rm ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
+                                                                                ${ pkgs.flock }/bin/flock -u 200
                                                                         done
                                                                 '' ;
                                                             test =
