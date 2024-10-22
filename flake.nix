@@ -265,46 +265,50 @@
                                                                                                             ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc
                                                                                                     '' ;
                                                                                         } ;
-                                                                                    init =
-                                                                                        { pkgs , ... } : target :
-                                                                                            ''
-                                                                                                ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
-                                                                                                    ${ pkgs.coreutils }/bin/touch ${ environment-variable target }/signal &&
-                                                                                                    ${ pkgs.coreutils }/bin/sleep 1 &&
-                                                                                                    ${ pkgs.coreutils }/bin/echo 0 > ${ environment-variable target }/signal &&
-                                                                                                    ${ pkgs.coreutils }/bin/sleep 1 &&
-                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/init.arguments.asc &&
-                                                                                                    if ${ has-standard-input }
-                                                                                                    then
-                                                                                                        ${ pkgs.coreutils }/bin/echo true > ${ environment-variable target }/init.has-standard-input.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/init.standard-input.asc
-                                                                                                    else
-                                                                                                        ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/init.has-standard-input.asc
-                                                                                                    fi &&
-                                                                                                    ${ pkgs.coreutils }/bin/echo 1 > ${ environment-variable target }/signal &&
-                                                                                                    ${ pkgs.coreutils }/bin/sleep 1
-                                                                                            '' ;
-                                                                                    release =
-                                                                                        { pkgs , ... } : target :
-                                                                                            ''
-                                                                                                ${ pkgs.coreutils }/bin/echo 2 > ${ environment-variable target }/signal &&
-                                                                                                    ${ pkgs.coreutils }/bin/sleep 1 &&
-                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/release.arguments.asc &&
-                                                                                                    if ${ has-standard-input }
-                                                                                                    then
-                                                                                                        ${ pkgs.coreutils }/bin/echo true > ${ environment-variable target }/release.has-standard-input.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/release.standard-input.asc
-                                                                                                    else
-                                                                                                        ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/release.has-standard-input.asc
-                                                                                                    fi &&
-                                                                                                    ${ pkgs.coreutils }/bin/echo 3 > ${ environment-variable target }/signal &&
-                                                                                                    ${ pkgs.coreutils }/bin/sleep 1
-                                                                                            '' ;
+                                                                                    alpha =
+                                                                                        {
+                                                                                            init =
+                                                                                                { pkgs , ... } : target :
+                                                                                                    ''
+                                                                                                        ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
+                                                                                                            ${ pkgs.coreutils }/bin/touch ${ environment-variable target }/signal &&
+                                                                                                            ${ pkgs.coreutils }/bin/sleep 1 &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo 0 > ${ environment-variable target }/signal &&
+                                                                                                            ${ pkgs.coreutils }/bin/sleep 1 &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/init.arguments.asc &&
+                                                                                                            if ${ has-standard-input }
+                                                                                                            then
+                                                                                                                ${ pkgs.coreutils }/bin/echo true > ${ environment-variable target }/init.has-standard-input.asc &&
+                                                                                                                    ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/init.standard-input.asc
+                                                                                                            else
+                                                                                                                ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/init.has-standard-input.asc
+                                                                                                            fi &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo 1 > ${ environment-variable target }/signal &&
+                                                                                                            ${ pkgs.coreutils }/bin/sleep 1
+                                                                                                    '' ;
+                                                                                            release =
+                                                                                                { pkgs , ... } : target :
+                                                                                                    ''
+                                                                                                        ${ pkgs.coreutils }/bin/echo 2 > ${ environment-variable target }/signal &&
+                                                                                                            ${ pkgs.coreutils }/bin/sleep 1 &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/release.arguments.asc &&
+                                                                                                            if ${ has-standard-input }
+                                                                                                            then
+                                                                                                                ${ pkgs.coreutils }/bin/echo true > ${ environment-variable target }/release.has-standard-input.asc &&
+                                                                                                                    ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/release.standard-input.asc
+                                                                                                            else
+                                                                                                                ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/release.has-standard-input.asc
+                                                                                                            fi &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo 3 > ${ environment-variable target }/signal &&
+                                                                                                            ${ pkgs.coreutils }/bin/sleep 1
+                                                                                                    '' ;
+                                                                                        } ;
                                                                                 } ;
                                                                     secondary = { pkgs = pkgs ; } ;
                                                                     temporaryX =
                                                                         {
-                                                                            alpha = scripts : { init = scripts.init ; release = scripts.release ; } ;
+                                                                            alpha = scripts : { init = scripts.alpha.init ; release = scripts.alpha.release ; } ;
+                                                                            evictor = scripts : { init = scripts.evictor.init ; release = scripts.evictor.release ; } ;
                                                                         } ;
                                                                     timestamp = "c9e48583e0eb029b6c6feeedf011cd26ae1fb5e6a7cf6ec6a06f263284e5a57217b71a32647e6dfc33b3d4ea275ff4c1e644d11de7bde89ac7edd60fff5ba1f8" ;
                                                                 } ;
