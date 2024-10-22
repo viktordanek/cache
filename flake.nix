@@ -383,7 +383,6 @@
                                                                             exec 200> ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
                                                                                 ${ pkgs.flock }/bin/flock 200 &&
                                                                                 INDEX=$( ${ pkgs.findutils }/bin/find ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } -mindepth 1 -maxdepth 1 -type d | ${ pkgs.coreutils }/bin/wc --lines ) &&
-                                                                                ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" } &&
                                                                                 ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" } &&
                                                                                 ${ pkgs.coreutils }/bin/rm ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
                                                                                 ${ pkgs.flock }/bin/flock -u 200
