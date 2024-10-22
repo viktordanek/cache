@@ -326,7 +326,8 @@
                                                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.arguments.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
-                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo evictor > ${ environment-variable target }/init.name.asc
                                                                                             '' ;
                                                                                     release =
                                                                                         { pkgs , ... } : target :
