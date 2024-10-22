@@ -209,59 +209,7 @@
                                                                     preparation-error-code = 76 ;
                                                                     salt = "ad9f64392f6673cb7b30dd3b44a4c6acdd13ae507dbcc3998b62dd8a9f72c1199532598d261c374dc4073548fa8abd757ed714ce37b5f01b7aaac4bfe439cfa7" ;
                                                                     scripts =
-                                                                        let
-                                                                            model =
-                                                                                method : { pkgs , ... } : target :
-                                                                                    ''
-                                                                                        ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
-                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/${ method }.arguments.asc &&
-                                                                                            if ${ has-standard-input }
-                                                                                            then
-                                                                                                ${ pkgs.coreutils }/bin/echo true > ${ environment-variable target }/${ method }.has-standard-input.asc &&
-                                                                                                    ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/${ method }.standard-input.asc
-                                                                                            else
-                                                                                                ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/${ method }/has-standard-input.asc
-                                                                                            fi
-                                                                                    '' ;
-                                                                            in
                                                                                 {
-                                                                                    evictor =
-                                                                                        {
-                                                                                            init =
-                                                                                                { pkgs , ... } : target :
-                                                                                                    ''
-                                                                                                        ARGUMENTS=${ environment-variable "@" } &&
-                                                                                                            if ${ has-standard-input }
-                                                                                                            then
-                                                                                                                HAS_STANDARD_INPUT=true &&
-                                                                                                                    STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
-                                                                                                            else
-                                                                                                                HAS_STANDARD_INPUT=false &&
-                                                                                                                    STANDARD_INPUT=
-                                                                                                            fi
-                                                                                                            ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.arguments.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc
-                                                                                                    '' ;
-                                                                                            release =
-                                                                                                { pkgs , ... } : target :
-                                                                                                    ''
-                                                                                                        ARGUMENTS=${ environment-variable "@" } &&
-                                                                                                            if ${ has-standard-input }
-                                                                                                            then
-                                                                                                                HAS_STANDARD_INPUT=true &&
-                                                                                                                    STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
-                                                                                                            else
-                                                                                                                HAS_STANDARD_INPUT=false &&
-                                                                                                                    STANDARD_INPUT=
-                                                                                                            fi
-                                                                                                            ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/release.arguments.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc
-                                                                                                    '' ;
-                                                                                        } ;
                                                                                     alpha =
                                                                                         {
                                                                                             init =
