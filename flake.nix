@@ -198,11 +198,6 @@
                                                                     cache =
                                                                         {
                                                                             alpha = temporary : { provision = "${ temporary }/temporary/alpha" ; life = inc ; force = false ; } ;
-                                                                            evictors =
-                                                                                {
-                                                                                    fast = temporary : { provision = "${ temporary }/temporary/evictor" ; life =4 ; force = false ; } ;
-                                                                                    slow = temporary : { provision = "${ temporary }/temporary/evictor" ; life = 16 ; force = false ; } ;
-                                                                                } ;
                                                                         } ;
                                                                     cache-broken-directory = "${ pkgs.coreutils }/bin/mktemp --dry-run -t XXXXXXXX.d9f62079fdb278a0cc34320b3ab49be1294c3fac" ;
                                                                     directory = "${ environment-variable "TMPDIR" }/328c9d7ba28416ac686ff86392fd1870763ff682" ;
