@@ -287,18 +287,7 @@
                                                         resource2 =
                                                             lib
                                                                 {
-                                                                    at =
-                                                                        pkgs.writeShellScript
-                                                                            "at"
-                                                                            ''
-                                                                                COMMAND=$( ${ pkgs.coreutils }/bin/tee ) &&
-                                                                                    if [ -z "${ environment-variable "COMMAND" }" ]
-                                                                                    then
-                                                                                        ${ pkgs.coreutils }/bin/false
-                                                                                    else
-                                                                                        ${ pkgs.bash }/bin/bash -c "${ environment-variable "COMMAND" }" &
-                                                                                    fi
-                                                                            '' ;
+                                                                    at = at ;
                                                                     cache =
                                                                         {
                                                                             alpha = temporary : { provision = "${ temporary }/temporary/alpha" ; life = 8 ; force = false ; } ;
