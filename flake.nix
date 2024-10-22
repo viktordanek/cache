@@ -290,7 +290,6 @@
                                                                     at = at ;
                                                                     cache =
                                                                         {
-                                                                            alpha = temporary : { provision = "${ temporary }/temporary/alpha" ; life = 8 ; force = false ; } ;
                                                                             evictors =
                                                                                 {
                                                                                     fast = temporary : { provision = "${ temporary }/temporary/evictor" ; life =4 ; force = false ; } ;
