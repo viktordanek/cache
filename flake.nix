@@ -289,6 +289,7 @@
                                                                         ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0 &&
                                                                         ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0 &&
                                                                         ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-signal" record-signal } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" | ${ at } now  > /dev/null 2>&1 &&
+                                                                        ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-change" record-change } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" delete_self | ${ at } now  > /dev/null 2>&1 &&
                                                                         ${ pkgs.coreutils }/bin/rm ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock
                                                                 '' ;
                                                             record-change =
@@ -302,7 +303,6 @@
                                                                             exec 200> ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
                                                                                 ${ pkgs.flock }/bin/flock 200 &&
                                                                                 INDEX=$( ${ pkgs.findutils }/bin/find ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } -mindepth 1 -maxdepth 1 -type d | ${ pkgs.coreutils }/bin/wc --lines ) &&
-                                                                                ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" } &&
                                                                                 ${ pkgs.coreutils }/bin/echo "${ environment-variable "NAME" } ${ environment-variable "EVENT" }" > ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" } &&
                                                                                 ${ pkgs.coreutils }/bin/rm ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
                                                                                 ${ pkgs.flock }/bin/flock -u 200
