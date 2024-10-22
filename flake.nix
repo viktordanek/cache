@@ -293,6 +293,169 @@
                                                                                                             then
                                                                                                                 if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
                                                                                                                 then
+                                                                                                                    ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" }
+                                                                                                                else
+                                                                                                                    ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" }
+                                                                                                                fi
+                                                                                                            else
+                                                                                                                if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
+                                                                                                                then
+                                                                                                                    ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" }
+                                                                                                                else
+                                                                                                                    ${ resource2.evictors.slow
+                                                                                                                     } ${ environment-variable "ARGUMENTS" }
+                                                                                                                fi
+                                                                                                            fi
+                                                                                                            ${ pkgs.coreutils }/bin/sleep 1 &&
+                                                                                                            exit ${ environment-variable "STATUS" }
+                                                                                                    '' ;
+                                                                                            release =
+                                                                                                { pkgs , ... } : target :
+                                                                                                    ''
+                                                                                                        EVICTOR=${ environment-variable 1 } &&
+                                                                                                            STATUS=${ environment-variable 2 } &&
+                                                                                                            ARGUMENTS=${ environment-variable "@" } &&
+                                                                                                            if ${ has-standard-input }
+                                                                                                            then
+                                                                                                                HAS_STANDARD_INPUT=true &&
+                                                                                                                    STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
+                                                                                                            else
+                                                                                                                HAS_STANDARD_INPUT=false &&
+                                                                                                                    STANDARD_INPUT=
+                                                                                                            fi &&
+                                                                                                            ${ pkgs.coreutils }/bin/sleep 1 &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo 2 > ${ environment-variable target }/signal &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/release.arguments.asc &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/release.has-standard-input.asc &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/release.standard-input &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo 3 > ${ environment-variable target }/signal &&
+                                                                                                            ${ pkgs.coreutils }/bin/sleep 1
+                                                                                                    '' ;
+                                                                                        } ;
+                                                                                } ;
+                                                                    secondary = { pkgs = pkgs ; } ;
+                                                                    temporaryX =
+                                                                        {
+                                                                            alpha = scripts : { init = scripts.alpha.init ; release = scripts.alpha.release ; } ;
+                                                                            evictor = scripts : { init = scripts.evictor.init ; release = scripts.evictor.release ; } ;
+                                                                        } ;
+                                                                    timestamp = "c9e48583e0eb029b6c6feeedf011cd26ae1fb5e6a7cf6ec6a06f263284e5a57217b71a32647e6dfc33b3d4ea275ff4c1e644d11de7bde89ac7edd60fff5ba1f8" ;
+                                                                } ;
+                                                        resource2 =
+                                                            lib
+                                                                {
+                                                                    at =
+                                                                        pkgs.writeShellScript
+                                                                            "at"
+                                                                            ''
+                                                                                COMMAND=$( ${ pkgs.coreutils }/bin/tee ) &&
+                                                                                    if [ -z "${ environment-variable "COMMAND" }" ]
+                                                                                    then
+                                                                                        ${ pkgs.coreutils }/bin/false
+                                                                                    else
+                                                                                        ${ pkgs.bash }/bin/bash -c "${ environment-variable "COMMAND" }" &
+                                                                                    fi
+                                                                            '' ;
+                                                                    cache =
+                                                                        {
+                                                                            alpha = temporary : { provision = "${ temporary }/temporary/alpha" ; life = 8 ; force = false ; } ;
+                                                                            evictors =
+                                                                                {
+                                                                                    fast = temporary : { provision = "${ temporary }/temporary/evictor" ; life =4 ; force = false ; } ;
+                                                                                    slow = temporary : { provision = "${ temporary }/temporary/evictor" ; life = 16 ; force = false ; } ;
+                                                                                } ;
+                                                                        } ;
+                                                                    cache-broken-directory = "${ pkgs.coreutils }/bin/mktemp --dry-run -t XXXXXXXX.bd4b73ded10cfe480e1544fdf8cf18d6478bcf9a" ;
+                                                                    directory = "${ environment-variable "TMPDIR" }/816108043e052c39c0379507704ecae790345459" ;
+                                                                    hash = "d52b8a8e6e8e5e36fdce2bcf2f620290dabebaaaef7b63b970ba89c7a5947c604078eb1913886d8c8eb2fec58f878951dd623e8adeb3435b1bca8cc62f8d448f" ;
+                                                                    invalid-cache-throw = value : "a17e6bcf1af7a3ad83d6b707074cae26687647f16f84a86e43ce3c1f5f9033290847c5d7cae12dfb9d05408e5b9f8ada9325f04d761589adbe08cdd2c510a101 ${ builtins.typeOf value }" ;
+                                                                    invalid-script-throw = value : "9184eae8de7f663515254228cb87d381f80b405a2bc682e76a351f4d1baf44771737c4e6d4fbbd3fdbc44ea6da0f7045046c1711fdd281e732f9fdbfa0d1a574 ${ builtins.typeOf value }" ;
+                                                                    invalid-temporary-throw = value : "dd01224954bdf16279777920a5931a4f819a35def2ee3d8e1919daa9ea03dee44426d88d6caf8d2517bc4b81980d889d47ee1204ff07b2703e18f1612f6cf63d ${ builtins.typeOf value }" ;
+                                                                    lock-error-code = 85 ;
+                                                                    preparation-error-code = 86 ;
+                                                                    salt = "51f7ff82bb9f198bfdf6826e01ee4702149f551006a4c75cf9d020c869ddb4ae537816d1f92929f3c356c14be30d58dbdb4b6f73d8704ca4748c353fcba5a050" ;
+                                                                    scripts =
+                                                                        let
+                                                                            model =
+                                                                                method : { pkgs , ... } : target :
+                                                                                    ''
+                                                                                        ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
+                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/${ method }.arguments.asc &&
+                                                                                            if ${ has-standard-input }
+                                                                                            then
+                                                                                                ${ pkgs.coreutils }/bin/echo true > ${ environment-variable target }/${ method }.has-standard-input.asc &&
+                                                                                                    ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/${ method }.standard-input.asc
+                                                                                            else
+                                                                                                ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/${ method }/has-standard-input.asc
+                                                                                            fi
+                                                                                    '' ;
+                                                                            in
+                                                                                {
+                                                                                    evictor =
+                                                                                        {
+                                                                                            init =
+                                                                                                { pkgs , ... } : target :
+                                                                                                    ''
+                                                                                                        ARGUMENTS=${ environment-variable "@" } &&
+                                                                                                            if ${ has-standard-input }
+                                                                                                            then
+                                                                                                                HAS_STANDARD_INPUT=true &&
+                                                                                                                    STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
+                                                                                                            else
+                                                                                                                HAS_STANDARD_INPUT=false &&
+                                                                                                                    STANDARD_INPUT=
+                                                                                                            fi
+                                                                                                            ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.arguments.asc &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc
+                                                                                                    '' ;
+                                                                                            release =
+                                                                                                { pkgs , ... } : target :
+                                                                                                    ''
+                                                                                                        ARGUMENTS=${ environment-variable "@" } &&
+                                                                                                            if ${ has-standard-input }
+                                                                                                            then
+                                                                                                                HAS_STANDARD_INPUT=true &&
+                                                                                                                    STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
+                                                                                                            else
+                                                                                                                HAS_STANDARD_INPUT=false &&
+                                                                                                                    STANDARD_INPUT=
+                                                                                                            fi
+                                                                                                            ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/release.arguments.asc &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc
+                                                                                                    '' ;
+                                                                                        } ;
+                                                                                    alpha =
+                                                                                        {
+                                                                                            init =
+                                                                                                { pkgs , ... } : target :
+                                                                                                    ''
+                                                                                                        EVICTOR=${ environment-variable 1 } &&
+                                                                                                            STATUS=${ environment-variable 2 } &&
+                                                                                                            ARGUMENTS=${ environment-variable "@" } &&
+                                                                                                            if ${ has-standard-input }
+                                                                                                            then
+                                                                                                                HAS_STANDARD_INPUT=true &&
+                                                                                                                    STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
+                                                                                                            else
+                                                                                                                HAS_STANDARD_INPUT=false &&
+                                                                                                                    STANDARD_INPUT=
+                                                                                                            fi &&
+                                                                                                            ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
+                                                                                                            ${ pkgs.coreutils }/bin/touch ${ environment-variable target }/signal &&
+                                                                                                            ${ pkgs.coreutils }/bin/sleep 1 &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo 0 > ${ environment-variable target }/signal &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.arguments.asc &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input &&
+                                                                                                            ${ pkgs.coreutils }/bin/echo 1 > ${ environment-variable target }/signal &&
+                                                                                                            if [ ${ environment-variable "EVICTOR" } == "fast" ]
+                                                                                                            then
+                                                                                                                if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
+                                                                                                                then
                                                                                                                     ${ pkgs.coreutils }/bin/true
                                                                                                                 else
                                                                                                                     ${ pkgs.coreutils }/bin/true
@@ -402,7 +565,7 @@
                                                                         } &&
                                                                             test_expected_observed ( )
                                                                                 {
-                                                                                    ${ pkgs.findutils }/bin/find ${ environment-variable "EXPECTED_DIRECTORY" } -type f | while read EXPECTED_FILE
+                                                                                    ${ pkgs.findutils }/bin/find ${ environment-variable "EXPECTED_DIRECTORY" } -type f | ${ pkgs.coreutils }/bin/sort | while read EXPECTED_FILE
                                                                                     do
                                                                                         RELATIVE=$( ${ pkgs.coreutils }/bin/realpath --relative-to ${ environment-variable "EXPECTED_DIRECTORY" } ${ environment-variable "EXPECTED_FILE" } ) &&
                                                                                             OBSERVED_FILE=${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "RELATIVE" } &&
@@ -415,7 +578,7 @@
                                                                                 } &&
                                                                             test_observed_expected ( )
                                                                                 {
-                                                                                    ${ pkgs.findutils }/bin/find ${ environment-variable "OBSERVED_DIRECTORY" } -type f | while read OBSERVED_FILE
+                                                                                    ${ pkgs.findutils }/bin/find ${ environment-variable "OBSERVED_DIRECTORY" } -type f | ${ pkgs.coreutils }/bin/sort | while read OBSERVED_FILE
                                                                                     do
                                                                                         RELATIVE=$( ${ pkgs.coreutils }/bin/realpath --relative-to ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "OBSERVED_FILE" } ) &&
                                                                                             EXPECTED_FILE=${ environment-variable "EXPECTED_DIRECTORY" }/${ environment-variable "RELATIVE" } &&
@@ -432,6 +595,7 @@
                                                                 export OBSERVED_DIRECTORY=$out &&
                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" } &&
                                                                     ${ pkgs.coreutils }/bin/mkdir /build/328c9d7ba28416ac686ff86392fd1870763ff682 &&
+                                                                    ${ pkgs.coreutils }/bin/mkdir /build/816108043e052c39c0379507704ecae790345459 &&
                                                                     ${ pkgs.coreutils }/bin/sleep $(( 16 - ( $( ${ pkgs.coreutils }/bin/date +%s ) % 16 ) )) &&
                                                                     ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record" record } a $( ${ pkgs.coreutils }/bin/echo fast 0 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource1.alpha } af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 )" | ${ at } now > /dev/null 2>&1 &&
                                                                     ${ pkgs.coreutils }/bin/sleep 16 &&
