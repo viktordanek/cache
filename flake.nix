@@ -248,7 +248,9 @@
                                                                                                         else
                                                                                                             ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" }
                                                                                                         fi
-                                                                                                    fi
+                                                                                                    fi &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo alpha > ${ environment-variable target }/init.name.asc &&
+                                                                                                    ${ pkgs.coreutils }/bin/sleep ${ builtins.toString inc } &&
                                                                                                     ${ pkgs.coreutils }/bin/echo 1 > ${ environment-variable target }/signal &&
                                                                                                     ${ pkgs.coreutils }/bin/sleep ${ builtins.toString inc } &&
                                                                                                     exit ${ environment-variable "STATUS" }
@@ -267,8 +269,8 @@
                                                                                                         HAS_STANDARD_INPUT=false &&
                                                                                                             STANDARD_INPUT=
                                                                                                     fi &&
-                                                                                                    ${ pkgs.coreutils }/bin/sleep ${ builtins.toString inc } &&
                                                                                                     ${ pkgs.coreutils }/bin/echo 2 > ${ environment-variable target }/signal &&
+                                                                                                    ${ pkgs.coreutils }/bin/sleep ${ builtins.toString inc } &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/release.arguments.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/release.has-standard-input.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/release.standard-input &&
@@ -383,6 +385,22 @@
                                                                                 ${ pkgs.flock }/bin/flock -u 200
                                                                         done
                                                                 '' ;
+                                                            record-evictor =
+                                                                ''
+                                                                    OBSERVED_DIRECTORY=${ environment-variable 1 } &&
+                                                                        NAME=${ environment-variable 2 } &&
+                                                                        OBJECT=${ environment-variable 3 } &&
+                                                                        SPEED=${ environment-variable 4 } &&
+                                                                        ${ pkgs.inotify-tools }/bin/inotifywait --monitor --event monitor ${ environment-variable "OBJECT" } --format "%w%f" | while read SIGNAL_FILE
+                                                                        do
+                                                                            exec 200> ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
+                                                                                ${ pkgs.flock }/bin/flock 200 &&
+                                                                                INDEX=$( ${ pkgs.findutils }/bin/find ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } -mindepth 1 -maxdepth 1 -type d | ${ pkgs.coreutils }/bin/wc --lines ) &&
+                                                                                ${ pkgs.coreutils }/bin/echo "${ environment-variable "NAME" } ${ environment-variable "EVENT" }" > ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" } &&
+                                                                                ${ pkgs.coreutils }/bin/rm ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
+                                                                                ${ pkgs.flock }/bin/flock -u 200
+                                                                        done
+                                                                '' ;
                                                             record-signal =
                                                                 ''
                                                                     OBSERVED_DIRECTORY=${ environment-variable 1 } &&
@@ -393,7 +411,7 @@
                                                                             exec 200> ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
                                                                                 ${ pkgs.flock }/bin/flock 200 &&
                                                                                 INDEX=$( ${ pkgs.findutils }/bin/find ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } -mindepth 1 -maxdepth 1 -type d | ${ pkgs.coreutils }/bin/wc --lines ) &&
-                                                                                ${ pkgs.findutils }/bin/find ${ environment-variable "OBJECT" } -mindepth 1 -maxdepth 1 -type f -exec ${ pkgs.gnused }/bin/sed -e "w${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "INDEX" }{}" \;
+                                                                                ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" } &&
                                                                                 ${ pkgs.coreutils }/bin/rm ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
                                                                                 ${ pkgs.flock }/bin/flock -u 200
                                                                         done
