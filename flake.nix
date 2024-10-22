@@ -290,6 +290,7 @@
                                                                         ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0 &&
                                                                         ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-signal" record-signal } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" | ${ at } now  > /dev/null 2>&1 &&
                                                                         ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-change" record-change } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" delete_self | ${ at } now  > /dev/null 2>&1 &&
+                                                                        ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-change" record-change } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" move_self | ${ at } now  > /dev/null 2>&1 &&
                                                                         ${ pkgs.coreutils }/bin/rm ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock
                                                                 '' ;
                                                             record-change =
