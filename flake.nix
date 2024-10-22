@@ -237,16 +237,16 @@
                                                                                                     then
                                                                                                         if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
                                                                                                         then
-                                                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" }
+                                                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.evictor.asc
                                                                                                         else
-                                                                                                            ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" }
+                                                                                                            ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.evictor.asc
                                                                                                         fi
                                                                                                     else
                                                                                                         if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
                                                                                                         then
-                                                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" }
+                                                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.evictor.asc
                                                                                                         else
-                                                                                                            ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" }
+                                                                                                            ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.evictor.asc
                                                                                                         fi
                                                                                                     fi &&
                                                                                                     ${ pkgs.coreutils }/bin/echo alpha > ${ environment-variable target }/init.name.asc &&
@@ -363,11 +363,11 @@
                                                                         ${ pkgs.flock }/bin/flock 200 &&
                                                                         ${ pkgs.coreutils }/bin/echo "RECORDING ${ environment-variable "NAME" }=${ environment-variable "OBJECT" }" &&
                                                                         ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } &&
-                                                                        ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0 &&
-                                                                        ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0 &&
                                                                         ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-signal" record-signal } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" | ${ at } now  > /dev/null 2>&1 &&
                                                                         ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-change" record-change } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" delete_self | ${ at } now  > /dev/null 2>&1 &&
                                                                         ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-change" record-change } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" move_self | ${ at } now  > /dev/null 2>&1 &&
+                                                                        # ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-evictor" record-evictor } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" fast | ${ at } now  > /dev/null 2>&1 &&
+                                                                        # ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-evictor" record-evictor } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" slow | ${ at } now  > /dev/null 2>&1 &&
                                                                         ${ pkgs.coreutils }/bin/rm ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock
                                                                 '' ;
                                                             record-change =
@@ -412,7 +412,17 @@
                                                                             exec 200> ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
                                                                                 ${ pkgs.flock }/bin/flock 200 &&
                                                                                 INDEX=$( ${ pkgs.findutils }/bin/find ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } -mindepth 1 -maxdepth 1 -type d | ${ pkgs.coreutils }/bin/wc --lines ) &&
-                                                                                ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" } &&
+                                                                                ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" } &&
+                                                                                ${ pkgs.findutils }/bin/find ${ environment-variable "OBJECT" } -mindepth 1 -maxdepth 1 -type f | while read FILE
+                                                                                do
+                                                                                    BASE_NAME=$( ${ pkgs.coreutils }/bin/basename ${ environment-variable "FILE" } ) &&
+                                                                                        if [ ${ environment-variable "BASE_NAME" } == "init.evictor.asc" ]
+                                                                                        then
+                                                                                            ${ pkgs.coreutils }/bin/true
+                                                                                        else
+                                                                                            ${ pkgs.coreutils }/bin/cp ${ environment-variable "FILE" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" }/${ environment-variable "BASE_NAME" }
+                                                                                        fi
+                                                                                done &&
                                                                                 ${ pkgs.coreutils }/bin/rm ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
                                                                                 ${ pkgs.flock }/bin/flock -u 200
                                                                         done
