@@ -270,6 +270,19 @@
                                                                         ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } &&
                                                                         ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0 &&
                                                                         ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0
+                                                                        # ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-signal" record-signal } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" | ${ pkgs.at }/bin/at now > /dev/null 2> /dev/null
+                                                                '' ;
+                                                            record-signal =
+                                                                ''
+                                                                    OBSERVED_DIRECTORY=${ environment-variable 1 } &&
+                                                                        NAME=${ environment-variable 2 } &&
+                                                                        OBJECT=${ environment-variable 3 } &&
+                                                                        ${ pkgs.inotify-tools }/bin/inotifywait --monitor --event modify ${ environment-variable "OBJECT" }/signal --format "%w%f" | while read SIGNAL_FILE
+                                                                        do
+                                                                            INDEX=$( ${ pkgs.findutils }/bin/find ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } -mindepth 1 -maxdepth 1 -type d | ${ pkgs.coreutils }/bin/wc --lines ) &&
+                                                                                ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" } &&
+                                                                                ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/${ environment-variable "INDEX" }
+                                                                        done
                                                                 '' ;
                                                             test =
                                                                 ''
