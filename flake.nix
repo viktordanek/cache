@@ -190,14 +190,14 @@
                                                                             ${ pkgs.bash }/bin/bash -c "${ environment-variable "COMMAND" }" &
                                                                         fi
                                                                 '' ;
-                                                        inc = 8 ;
+                                                        inc = 1 ;
                                                         resource1 =
                                                             lib
                                                                 {
                                                                     at = at ;
                                                                     cache =
                                                                         {
-                                                                            alpha = temporary : { provision = "${ temporary }/temporary/alpha" ; life = inc ; force = false ; } ;
+                                                                            alpha = temporary : { provision = "${ temporary }/temporary/alpha" ; life = 16 * inc ; force = false ; } ;
                                                                         } ;
                                                                     cache-broken-directory = "${ pkgs.coreutils }/bin/mktemp --dry-run -t XXXXXXXX.d9f62079fdb278a0cc34320b3ab49be1294c3fac" ;
                                                                     directory = "${ environment-variable "TMPDIR" }/328c9d7ba28416ac686ff86392fd1870763ff682" ;
@@ -228,7 +228,7 @@
                                                                                                     fi &&
                                                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
                                                                                                     ${ pkgs.coreutils }/bin/touch ${ environment-variable target }/signal &&
-                                                                                                    ${ pkgs.coreutils }/bin/sleep 1 &&
+                                                                                                    ${ pkgs.coreutils }/bin/sleep ${ builtins.toString inc } &&
                                                                                                     ${ pkgs.coreutils }/bin/echo 0 > ${ environment-variable target }/signal &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.arguments.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
@@ -250,7 +250,7 @@
                                                                                                     #         ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" }
                                                                                                     #     fi
                                                                                                     # fi
-                                                                                                    ${ pkgs.coreutils }/bin/sleep 1 &&
+                                                                                                    ${ pkgs.coreutils }/bin/sleep ${ builtins.toString inc } &&
                                                                                                     exit ${ environment-variable "STATUS" }
                                                                                             '' ;
                                                                                     release =
@@ -267,13 +267,13 @@
                                                                                                         HAS_STANDARD_INPUT=false &&
                                                                                                             STANDARD_INPUT=
                                                                                                     fi &&
-                                                                                                    ${ pkgs.coreutils }/bin/sleep 1 &&
+                                                                                                    ${ pkgs.coreutils }/bin/sleep ${ builtins.toString inc } &&
                                                                                                     ${ pkgs.coreutils }/bin/echo 2 > ${ environment-variable target }/signal &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/release.arguments.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/release.has-standard-input.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/release.standard-input &&
                                                                                                     ${ pkgs.coreutils }/bin/echo 3 > ${ environment-variable target }/signal &&
-                                                                                                    ${ pkgs.coreutils }/bin/sleep 1
+                                                                                                    ${ pkgs.coreutils }/bin/sleep ${ builtins.toString inc }
                                                                                             '' ;
                                                                                 } ;
                                                                         } ;
@@ -292,8 +292,8 @@
                                                                         {
                                                                             evictors =
                                                                                 {
-                                                                                    fast = temporary : { provision = "${ temporary }/temporary/evictor" ; life = inc ; force = false ; } ;
-                                                                                    slow = temporary : { provision = "${ temporary }/temporary/evictor" ; life = 4 * inc ; force = false ; } ;
+                                                                                    fast = temporary : { provision = "${ temporary }/temporary/evictor" ; life = 8 * inc ; force = false ; } ;
+                                                                                    slow = temporary : { provision = "${ temporary }/temporary/evictor" ; life = 32 * inc ; force = false ; } ;
                                                                                 } ;
                                                                         } ;
                                                                     cache-broken-directory = "${ pkgs.coreutils }/bin/mktemp --dry-run -t XXXXXXXX.bd4b73ded10cfe480e1544fdf8cf18d6478bcf9a" ;
@@ -438,9 +438,9 @@
                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" } &&
                                                                     ${ pkgs.coreutils }/bin/mkdir /build/328c9d7ba28416ac686ff86392fd1870763ff682 &&
                                                                     ${ pkgs.coreutils }/bin/mkdir /build/816108043e052c39c0379507704ecae790345459 &&
-                                                                    ${ pkgs.coreutils }/bin/sleep $(( ${ builtins.toString ( 4 * inc ) } - ( $( ${ pkgs.coreutils }/bin/date +%s ) % ${ builtins.toString ( 4 * inc ) } ) )) &&
+                                                                    ${ pkgs.coreutils }/bin/sleep $(( ${ builtins.toString ( 32 * inc ) } - ( $( ${ pkgs.coreutils }/bin/date +%s ) % ${ builtins.toString ( 32 * inc ) } ) )) &&
                                                                     ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record" record } a $( ${ pkgs.coreutils }/bin/echo fast 0 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource1.alpha } af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 )" | ${ at } now > /dev/null 2>&1 &&
-                                                                    ${ pkgs.coreutils }/bin/sleep ${ builtins.toString ( 5 * inc ) } &&
+                                                                    ${ pkgs.coreutils }/bin/sleep ${ builtins.toString ( 33 * inc ) } &&
                                                                     export EXPECTED_DIRECTORY=${ ./expected } &&
                                                                     ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
                                                             '' ;
