@@ -306,125 +306,49 @@
                                                                     preparation-error-code = 86 ;
                                                                     salt = "51f7ff82bb9f198bfdf6826e01ee4702149f551006a4c75cf9d020c869ddb4ae537816d1f92929f3c356c14be30d58dbdb4b6f73d8704ca4748c353fcba5a050" ;
                                                                     scripts =
-                                                                        let
-                                                                            model =
-                                                                                method : { pkgs , ... } : target :
-                                                                                    ''
-                                                                                        ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
-                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/${ method }.arguments.asc &&
-                                                                                            if ${ has-standard-input }
-                                                                                            then
-                                                                                                ${ pkgs.coreutils }/bin/echo true > ${ environment-variable target }/${ method }.has-standard-input.asc &&
-                                                                                                    ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/${ method }.standard-input.asc
-                                                                                            else
-                                                                                                ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/${ method }/has-standard-input.asc
-                                                                                            fi
-                                                                                    '' ;
-                                                                            in
+                                                                        {
+                                                                            evictor =
                                                                                 {
-                                                                                    evictor =
-                                                                                        {
-                                                                                            init =
-                                                                                                { pkgs , ... } : target :
-                                                                                                    ''
-                                                                                                        ARGUMENTS=${ environment-variable "@" } &&
-                                                                                                            if ${ has-standard-input }
-                                                                                                            then
-                                                                                                                HAS_STANDARD_INPUT=true &&
-                                                                                                                    STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
-                                                                                                            else
-                                                                                                                HAS_STANDARD_INPUT=false &&
-                                                                                                                    STANDARD_INPUT=
-                                                                                                            fi
-                                                                                                            ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.arguments.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc
-                                                                                                    '' ;
-                                                                                            release =
-                                                                                                { pkgs , ... } : target :
-                                                                                                    ''
-                                                                                                        ARGUMENTS=${ environment-variable "@" } &&
-                                                                                                            if ${ has-standard-input }
-                                                                                                            then
-                                                                                                                HAS_STANDARD_INPUT=true &&
-                                                                                                                    STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
-                                                                                                            else
-                                                                                                                HAS_STANDARD_INPUT=false &&
-                                                                                                                    STANDARD_INPUT=
-                                                                                                            fi
-                                                                                                            ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/release.arguments.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc
-                                                                                                    '' ;
-                                                                                        } ;
-                                                                                    alpha =
-                                                                                        {
-                                                                                            init =
-                                                                                                { pkgs , ... } : target :
-                                                                                                    ''
-                                                                                                        EVICTOR=${ environment-variable 1 } &&
-                                                                                                            STATUS=${ environment-variable 2 } &&
-                                                                                                            ARGUMENTS=${ environment-variable "@" } &&
-                                                                                                            if ${ has-standard-input }
-                                                                                                            then
-                                                                                                                HAS_STANDARD_INPUT=true &&
-                                                                                                                    STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
-                                                                                                            else
-                                                                                                                HAS_STANDARD_INPUT=false &&
-                                                                                                                    STANDARD_INPUT=
-                                                                                                            fi &&
-                                                                                                            ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
-                                                                                                            ${ pkgs.coreutils }/bin/touch ${ environment-variable target }/signal &&
-                                                                                                            ${ pkgs.coreutils }/bin/sleep 1 &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo 0 > ${ environment-variable target }/signal &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.arguments.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo 1 > ${ environment-variable target }/signal &&
-                                                                                                            if [ ${ environment-variable "EVICTOR" } == "fast" ]
-                                                                                                            then
-                                                                                                                if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
-                                                                                                                then
-                                                                                                                    ${ pkgs.coreutils }/bin/true
-                                                                                                                else
-                                                                                                                    ${ pkgs.coreutils }/bin/true
-                                                                                                                fi
-                                                                                                            else
-                                                                                                                ${ pkgs.coreutils }/bin/true
-                                                                                                            fi
-                                                                                                            ${ pkgs.coreutils }/bin/sleep 1 &&
-                                                                                                            exit ${ environment-variable "STATUS" }
-                                                                                                    '' ;
-                                                                                            release =
-                                                                                                { pkgs , ... } : target :
-                                                                                                    ''
-                                                                                                        EVICTOR=${ environment-variable 1 } &&
-                                                                                                            STATUS=${ environment-variable 2 } &&
-                                                                                                            ARGUMENTS=${ environment-variable "@" } &&
-                                                                                                            if ${ has-standard-input }
-                                                                                                            then
-                                                                                                                HAS_STANDARD_INPUT=true &&
-                                                                                                                    STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
-                                                                                                            else
-                                                                                                                HAS_STANDARD_INPUT=false &&
-                                                                                                                    STANDARD_INPUT=
-                                                                                                            fi &&
-                                                                                                            ${ pkgs.coreutils }/bin/sleep 1 &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo 2 > ${ environment-variable target }/signal &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/release.arguments.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/release.has-standard-input.asc &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/release.standard-input &&
-                                                                                                            ${ pkgs.coreutils }/bin/echo 3 > ${ environment-variable target }/signal &&
-                                                                                                            ${ pkgs.coreutils }/bin/sleep 1
-                                                                                                    '' ;
-                                                                                        } ;
+                                                                                    init =
+                                                                                        { pkgs , ... } : target :
+                                                                                            ''
+                                                                                                ARGUMENTS=${ environment-variable "@" } &&
+                                                                                                    if ${ has-standard-input }
+                                                                                                    then
+                                                                                                        HAS_STANDARD_INPUT=true &&
+                                                                                                            STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
+                                                                                                    else
+                                                                                                        HAS_STANDARD_INPUT=false &&
+                                                                                                            STANDARD_INPUT=
+                                                                                                    fi
+                                                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.arguments.asc &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc
+                                                                                            '' ;
+                                                                                    release =
+                                                                                        { pkgs , ... } : target :
+                                                                                            ''
+                                                                                                ARGUMENTS=${ environment-variable "@" } &&
+                                                                                                    if ${ has-standard-input }
+                                                                                                    then
+                                                                                                        HAS_STANDARD_INPUT=true &&
+                                                                                                            STANDARD_INPUT=$( ${ pkgs.coreutils }/bin/tee )
+                                                                                                    else
+                                                                                                        HAS_STANDARD_INPUT=false &&
+                                                                                                            STANDARD_INPUT=
+                                                                                                    fi
+                                                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/release.arguments.asc &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc
+                                                                                            '' ;
                                                                                 } ;
+                                                                        } ;
                                                                     secondary = { pkgs = pkgs ; } ;
                                                                     temporaryX =
                                                                         {
-                                                                            alpha = scripts : { init = scripts.alpha.init ; release = scripts.alpha.release ; } ;
+                                                                            evictor = scripts : { init = scripts.evictor.init ; release = scripts.evictor.release ; } ;
                                                                         } ;
                                                                     timestamp = "c9e48583e0eb029b6c6feeedf011cd26ae1fb5e6a7cf6ec6a06f263284e5a57217b71a32647e6dfc33b3d4ea275ff4c1e644d11de7bde89ac7edd60fff5ba1f8" ;
                                                                 } ;
