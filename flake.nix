@@ -109,10 +109,8 @@
                                                                                         ${ pkgs.coreutils }/bin/ln --symbolic ${ pkgs.writeShellScript "evict" evict } ${ directory }/${ environment-variable hash }/evict.sh &&
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/arguments.asc ${ directory }/${ environment-variable hash }/has-standard-input.asc ${ directory }/${ environment-variable hash }/standard-input.asc ${ directory }/${ environment-variable hash }/expiry.asc ${ directory }/${ environment-variable hash }/force.asc &&
                                                                                         ${ pkgs.coreutils }/bin/echo "${ directory }/${ environment-variable hash }/prepare.sh" | ${ at } now > /dev/null 2>&1 &&
-                                                                                        ${ pkgs.coreutils }/bin/sleep 1 &&
-                                                                                        # ${ pkgs.inotify-tools }/bin/inotifywait --quiet --event create ${ directory }/${ environment-variable hash } &&
-                                                                                        # ${ pkgs.inotify-tools }/bin/inotifywait --quiet --event create ${ directory }/${ environment-variable hash } &&
-                                                                                        #  ${ pkgs.inotify-tools }/bin/inotifywait --quiet --event create ${ directory }/${ environment-variable hash } &&
+                                                                                        ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } > /dev/null 2>&1 &&
+                                                                                        ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } > /dev/null 2>&1 &&
                                                                                         if [ $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) != 0 ]
                                                                                         then
                                                                                            ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) &&
@@ -229,6 +227,8 @@
                                                                                         { pkgs , ... } : target :
                                                                                             ''
                                                                                                 ${ pkgs.coreutils }/bin/mkdir ${ environment-variable target } &&
+                                                                                                    ${ pkgs.coreutils }/bin/touch ${ environment-variable target }/signal &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo 0 > ${ environment-variable target }/signal &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/init.arguments.asc &&
                                                                                                     if ${ has-standard-input }
                                                                                                     then
@@ -236,12 +236,14 @@
                                                                                                             ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/init.standard-input.asc
                                                                                                     else
                                                                                                         ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/init.has-standard-input.asc
-                                                                                                    fi
+                                                                                                    fi &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo 1 > ${ environment-variable target }/signal
                                                                                             '' ;
                                                                                     release =
                                                                                         { pkgs , ... } : target :
                                                                                             ''
-                                                                                                ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/release.arguments.asc &&
+                                                                                                ${ pkgs.coreutils }/bin/echo 2 > ${ environment-variable target }/signal &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "@" } > ${ environment-variable target }/release.arguments.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable target } > ${ environment-variable target }/release.target.asc &&
                                                                                                     if ${ has-standard-input }
                                                                                                     then
@@ -249,7 +251,8 @@
                                                                                                             ${ pkgs.coreutils }/bin/tee > ${ environment-variable target }/release.standard-input.asc
                                                                                                     else
                                                                                                         ${ pkgs.coreutils }/bin/echo false > ${ environment-variable target }/release.has-standard-input.asc
-                                                                                                    fi
+                                                                                                    fi &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo 3 > ${ environment-variable target }/signal
                                                                                             '' ;
                                                                                 } ;
                                                                     secondary = { pkgs = pkgs ; } ;
@@ -259,6 +262,15 @@
                                                                         } ;
                                                                     timestamp = "c9e48583e0eb029b6c6feeedf011cd26ae1fb5e6a7cf6ec6a06f263284e5a57217b71a32647e6dfc33b3d4ea275ff4c1e644d11de7bde89ac7edd60fff5ba1f8" ;
                                                                 } ;
+                                                            record =
+                                                                ''
+                                                                    NAME=${ environment-variable 1 } &&
+                                                                        OBJECT=${ environment-variable 2 } &&
+                                                                        ${ pkgs.coreutils }/bin/echo "RECORDING ${ environment-variable "NAME" }=${ environment-variable "OBJECT" }" &&
+                                                                        ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } &&
+                                                                        ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0 &&
+                                                                        ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0
+                                                                '' ;
                                                             test =
                                                                 ''
                                                                     test_diff ( )
@@ -296,19 +308,9 @@
                                                         in
                                                             ''
                                                                 export OBSERVED_DIRECTORY=$out &&
-                                                                    ${ pkgs.coreutils }/bin/mkdir /build/328c9d7ba28416ac686ff86392fd1870763ff682 &&
-                                                                    ${ pkgs.coreutils }/bin/mkdir /build/gbruksaJ.27aab8b58c44dd9fd9e4f2d642b1862c94a793c8 &&
-                                                                    ${ pkgs.coreutils }/bin/mkdir /build/fc1F9nGN.27aab8b58c44dd9fd9e4f2d642b1862c94a793c8 &&
                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" } &&
-                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/alpha &&
-                                                                    ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/alpha/0 &&
-                                                                    if ALPHA=$( ${ pkgs.coreutils }/bin/echo 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource.alpha } af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 )
-                                                                    then
-                                                                        ${ pkgs.coreutils }/bin/echo SUCCESS
-                                                                    else
-                                                                        ${ pkgs.coreutils }/bin/echo FAILURE
-                                                                    fi &&
-                                                                    ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "ALPHA" } ${ environment-variable "OBSERVED_DIRECTORY" }/alpha/0 &&
+                                                                    ${ pkgs.coreutils }/bin/mkdir /build/328c9d7ba28416ac686ff86392fd1870763ff682 &&
+                                                                    ${ pkgs.writeShellScript "record" record } alpha $( ${ pkgs.coreutils }/bin/echo 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource.alpha } af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 ) &&
                                                                     export EXPECTED_DIRECTORY=${ ./expected } &&
                                                                     ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
                                                             '' ;
