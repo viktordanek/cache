@@ -178,21 +178,22 @@
                                                 src = ./. ;
                                                 installPhase =
                                                     let
+                                                        at =
+                                                            pkgs.writeShellScript
+                                                                "at"
+                                                                ''
+                                                                    COMMAND=$( ${ pkgs.coreutils }/bin/tee ) &&
+                                                                        if [ -z "${ environment-variable "COMMAND" }" ]
+                                                                        then
+                                                                            ${ pkgs.coreutils }/bin/false
+                                                                        else
+                                                                            ${ pkgs.bash }/bin/bash -c "${ environment-variable "COMMAND" }" &
+                                                                        fi
+                                                                '' ;
                                                         resource1 =
                                                             lib
                                                                 {
-                                                                    at =
-                                                                        pkgs.writeShellScript
-                                                                            "at"
-                                                                            ''
-                                                                                COMMAND=$( ${ pkgs.coreutils }/bin/tee ) &&
-                                                                                    if [ -z "${ environment-variable "COMMAND" }" ]
-                                                                                    then
-                                                                                        ${ pkgs.coreutils }/bin/false
-                                                                                    else
-                                                                                        ${ pkgs.bash }/bin/bash -c "${ environment-variable "COMMAND" }" &
-                                                                                    fi
-                                                                            '' ;
+                                                                    at = at ;
                                                                     cache =
                                                                         {
                                                                             alpha = temporary : { provision = "${ temporary }/temporary/alpha" ; life = 8 ; force = false ; } ;
@@ -497,18 +498,6 @@
                                                                         } ;
                                                                     timestamp = "c9e48583e0eb029b6c6feeedf011cd26ae1fb5e6a7cf6ec6a06f263284e5a57217b71a32647e6dfc33b3d4ea275ff4c1e644d11de7bde89ac7edd60fff5ba1f8" ;
                                                                 } ;
-                                                            at =
-                                                                pkgs.writeShellScript
-                                                                    "at"
-                                                                    ''
-                                                                        COMMAND=$( ${ pkgs.coreutils }/bin/tee ) &&
-                                                                            if [ -z "${ environment-variable "COMMAND" }" ]
-                                                                            then
-                                                                                ${ pkgs.coreutils }/bin/false
-                                                                            else
-                                                                                ${ pkgs.bash }/bin/bash -c "${ environment-variable "COMMAND" }" &
-                                                                            fi
-                                                                    '' ;
                                                             record =
                                                                 ''
                                                                     NAME=${ environment-variable 1 } &&
