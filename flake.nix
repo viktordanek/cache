@@ -425,7 +425,6 @@
                                                                     temporaryX =
                                                                         {
                                                                             alpha = scripts : { init = scripts.alpha.init ; release = scripts.alpha.release ; } ;
-                                                                            evictor = scripts : { init = scripts.evictor.init ; release = scripts.evictor.release ; } ;
                                                                         } ;
                                                                     timestamp = "c9e48583e0eb029b6c6feeedf011cd26ae1fb5e6a7cf6ec6a06f263284e5a57217b71a32647e6dfc33b3d4ea275ff4c1e644d11de7bde89ac7edd60fff5ba1f8" ;
                                                                 } ;
