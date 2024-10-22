@@ -178,7 +178,7 @@
                                                 src = ./. ;
                                                 installPhase =
                                                     let
-                                                        resource =
+                                                        resource1 =
                                                             lib
                                                                 {
                                                                     at =
@@ -433,7 +433,7 @@
                                                                     ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" } &&
                                                                     ${ pkgs.coreutils }/bin/mkdir /build/328c9d7ba28416ac686ff86392fd1870763ff682 &&
                                                                     ${ pkgs.coreutils }/bin/sleep $(( 16 - ( $( ${ pkgs.coreutils }/bin/date +%s ) % 16 ) )) &&
-                                                                    ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record" record } a $( ${ pkgs.coreutils }/bin/echo fast 0 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource.alpha } af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 )" | ${ at } now > /dev/null 2>&1 &&
+                                                                    ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record" record } a $( ${ pkgs.coreutils }/bin/echo fast 0 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource1.alpha } af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 )" | ${ at } now > /dev/null 2>&1 &&
                                                                     ${ pkgs.coreutils }/bin/sleep 16 &&
                                                                     export EXPECTED_DIRECTORY=${ ./expected } &&
                                                                     ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
