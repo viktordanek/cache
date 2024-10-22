@@ -291,8 +291,13 @@
                                                                                                             ${ pkgs.coreutils }/bin/echo 1 > ${ environment-variable target }/signal &&
                                                                                                             if [ ${ environment-variable "EVICTOR" } == "fast" ]
                                                                                                             then
-                                                                                                                ${ pkgs.coreutils }/bin/true
-                                                                                                            else [ ${ environment-variable "EVICTOR" } == "slow" ]
+                                                                                                                if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
+                                                                                                                then
+                                                                                                                    ${ pkgs.coreutils }/bin/true
+                                                                                                                else
+                                                                                                                    ${ pkgs.coreutils }/bin/true
+                                                                                                                fi
+                                                                                                            else
                                                                                                                 ${ pkgs.coreutils }/bin/true
                                                                                                             fi
                                                                                                             ${ pkgs.coreutils }/bin/sleep 1 &&
