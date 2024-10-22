@@ -292,8 +292,8 @@
                                                                         {
                                                                             evictors =
                                                                                 {
-                                                                                    fast = temporary : { provision = "${ temporary }/temporary/evictor" ; life =4 ; force = false ; } ;
-                                                                                    slow = temporary : { provision = "${ temporary }/temporary/evictor" ; life = 16 ; force = false ; } ;
+                                                                                    fast = temporary : { provision = "${ temporary }/temporary/evictor" ; life = inc ; force = false ; } ;
+                                                                                    slow = temporary : { provision = "${ temporary }/temporary/evictor" ; life = 4 * inc ; force = false ; } ;
                                                                                 } ;
                                                                         } ;
                                                                     cache-broken-directory = "${ pkgs.coreutils }/bin/mktemp --dry-run -t XXXXXXXX.bd4b73ded10cfe480e1544fdf8cf18d6478bcf9a" ;
