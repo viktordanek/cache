@@ -190,7 +190,7 @@
                                                                             ${ pkgs.bash }/bin/bash -c "${ environment-variable "COMMAND" }" &
                                                                         fi
                                                                 '' ;
-                                                        inc = 16 ;
+                                                        inc = 8 ;
                                                         resource1 =
                                                             lib
                                                                 {
