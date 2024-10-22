@@ -282,7 +282,7 @@
                                                                         ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } &&
                                                                         ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0 &&
                                                                         ${ pkgs.coreutils }/bin/cp --recursive ${ environment-variable "OBJECT" } ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }/0 &&
-                                                                        ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-signal" record-signal } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" | ${ at } now
+                                                                        ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-signal" record-signal } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" | ${ at } now
                                                                 '' ;
                                                             record-signal =
                                                                 ''
