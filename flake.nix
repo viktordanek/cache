@@ -233,23 +233,23 @@
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.arguments.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input &&
+                                                                                                    if [ ${ environment-variable "EVICTOR" } == "fast" ]
+                                                                                                    then
+                                                                                                        if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
+                                                                                                        then
+                                                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" }
+                                                                                                        else
+                                                                                                            ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" }
+                                                                                                        fi
+                                                                                                    else
+                                                                                                        if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
+                                                                                                        then
+                                                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" }
+                                                                                                        else
+                                                                                                            ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" }
+                                                                                                        fi
+                                                                                                    fi
                                                                                                     ${ pkgs.coreutils }/bin/echo 1 > ${ environment-variable target }/signal &&
-                                                                                                    # if [ ${ environment-variable "EVICTOR" } == "fast" ]
-                                                                                                    # then
-                                                                                                    #     if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
-                                                                                                    #     then
-                                                                                                    #         ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" }
-                                                                                                    #     else
-                                                                                                    #         ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" }
-                                                                                                    #     fi
-                                                                                                    # else
-                                                                                                    #     if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
-                                                                                                    #     then
-                                                                                                    #         ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" }
-                                                                                                    #     else
-                                                                                                    #         ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" }
-                                                                                                    #     fi
-                                                                                                    # fi
                                                                                                     ${ pkgs.coreutils }/bin/sleep ${ builtins.toString inc } &&
                                                                                                     exit ${ environment-variable "STATUS" }
                                                                                             '' ;
