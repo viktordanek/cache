@@ -110,12 +110,7 @@
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/arguments.asc ${ directory }/${ environment-variable hash }/has-standard-input.asc ${ directory }/${ environment-variable hash }/standard-input.asc ${ directory }/${ environment-variable hash }/expiry.asc ${ directory }/${ environment-variable hash }/force.asc &&
                                                                                         ${ pkgs.coreutils }/bin/echo "${ directory }/${ environment-variable hash }/prepare.sh" | ${ at } now > /dev/null 2>&1 &&
                                                                                         ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } > /dev/null 2>&1 &&
-                                                                                        ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } > /dev/null 2>&1 &&
-                                                                                        if [ $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) != 0 ]
-                                                                                        then
-                                                                                           ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) &&
-                                                                                                exit ${ builtins.toString preparation-error-code }
-                                                                                        fi
+                                                                                        ${ pkgs.inotify-tools }/bin/inotifywait --event create ${ directory }/${ environment-variable hash } > /dev/null 2>&1
                                                                                 fi &&
                                                                                 if [ ! -f ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_HASH" }.hash ]
                                                                                 then
@@ -127,7 +122,12 @@
                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "PARENT_PID" } > ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid &&
                                                                                         ${ pkgs.coreutils }/bin/chmod 0400 ${ directory }/${ environment-variable hash }/${ environment-variable "PARENT_PID" }.pid
                                                                                 fi &&
-                                                                                ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/out
+                                                                                ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/out &&
+                                                                                if [ $( ${ pkgs.coreutils }/bin/cat ${ directory }/${ environment-variable hash }/status.asc ) != 0 ]
+                                                                                then
+                                                                                   ${ pkgs.coreutils }/bin/mv ${ directory }/${ environment-variable hash } $( ${ cache-broken-directory } ) &&
+                                                                                        exit ${ builtins.toString preparation-error-code }
+                                                                                fi
                                                                             else
                                                                                 exit ${ builtins.toString lock-error-code }
                                                                             fi
@@ -137,14 +137,14 @@
                                                                 BASE=$( ${ pkgs.coreutils }/bin/dirname ${ environment-variable 0 } ) &&
                                                                     if [ $( ${ pkgs.coreutils }/bin/cat ${ environment-variable "BASE" }/has-standard-input.asc ) == true ]
                                                                     then
-                                                                        if ${ pkgs.coreutils }/bin/cat ${ environment-variable "BASE" }/standard-input.asc | ${ environment-variable "BASE" }/provision.sh ${ environment-variable "ARGUMENTS" } > ${ environment-variable "BASE" }/out 2> ${ environment-variable "BASE" }/err
+                                                                        if ${ pkgs.coreutils }/bin/cat ${ environment-variable "BASE" }/standard-input.asc | ${ environment-variable "BASE" }/provision.sh $( ${ pkgs.coreutils }/bin/cat ${ environment-variable "BASE" }/arguments.asc ) > ${ environment-variable "BASE" }/out 2> ${ environment-variable "BASE" }/err
                                                                         then
                                                                             STATUS=${ environment-variable "?" }
                                                                         else
                                                                             STATUS=${ environment-variable "?" }
                                                                         fi
                                                                     else
-                                                                        if ${ environment-variable "BASE" }/provision.sh ${ environment-variable "ARGUMENTS" } > ${ environment-variable "BASE" }/out 2> ${ environment-variable "BASE" }/err
+                                                                        if ${ environment-variable "BASE" }/provision.sh $( ${ pkgs.coreutils }/bin/cat ${ environment-variable "BASE" }/arguments.asc ) > ${ environment-variable "BASE" }/out 2> ${ environment-variable "BASE" }/err
                                                                         then
                                                                             STATUS=${ environment-variable "?" }
                                                                         else
@@ -217,7 +217,7 @@
                                                                                             ''
                                                                                                 EVICTOR=${ environment-variable 1 } &&
                                                                                                     STATUS=${ environment-variable 2 } &&
-                                                                                                    ARGUMENTS=${ environment-variable "@" } &&
+                                                                                                    ARGUMENTS=${ environment-variable "@:3" } &&
                                                                                                     if ${ has-standard-input }
                                                                                                     then
                                                                                                         HAS_STANDARD_INPUT=true &&
@@ -230,25 +230,27 @@
                                                                                                     ${ pkgs.coreutils }/bin/touch ${ environment-variable target }/signal &&
                                                                                                     ${ pkgs.coreutils }/bin/sleep ${ builtins.toString inc } &&
                                                                                                     ${ pkgs.coreutils }/bin/echo 0 > ${ environment-variable target }/signal &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "EVICTOR" } > ${ environment-variable target }/init.evictor.asc &&
+                                                                                                    ${ pkgs.coreutils }/bin/echo ${ environment-variable "STATUS" } > ${ environment-variable target }/init.status.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.arguments.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "HAS_STANDARD_INPUT" } > ${ environment-variable target }/init.has-standard-input.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/echo ${ environment-variable "STANDARD_INPUT" } > ${ environment-variable target }/init.standard-input.asc &&
-                                                                                                    if [ ${ environment-variable "EVICTOR" } == "fast" ]
-                                                                                                    then
-                                                                                                        if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
-                                                                                                        then
-                                                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.evictor.asc
-                                                                                                        else
-                                                                                                            ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.evictor.asc
-                                                                                                        fi
-                                                                                                    else
-                                                                                                        if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
-                                                                                                        then
-                                                                                                            ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.evictor.asc
-                                                                                                        else
-                                                                                                            ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/init.evictor.asc
-                                                                                                        fi
-                                                                                                    fi &&
+                                                                                                    # if [ ${ environment-variable "EVICTOR" } == "fast" ]
+                                                                                                    # then
+                                                                                                    #     if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
+                                                                                                    #     then
+                                                                                                    #         ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/evictor
+                                                                                                    #     else
+                                                                                                    #         ${ resource2.evictors.fast } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/evictor
+                                                                                                    #     fi
+                                                                                                    # else
+                                                                                                    #     if [ ${ environment-variable "HAS_STANDARD_INPUT" } == true ]
+                                                                                                    #     then
+                                                                                                    #         ${ pkgs.coreutils }/bin/cat ${ environment-variable "STANDARD_INPUT" } | ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/evictor
+                                                                                                    #     else
+                                                                                                    #         ${ resource2.evictors.slow } ${ environment-variable "ARGUMENTS" } > ${ environment-variable target }/evictor
+                                                                                                    #     fi
+                                                                                                    # fi &&
                                                                                                     ${ pkgs.coreutils }/bin/echo alpha > ${ environment-variable target }/init.name.asc &&
                                                                                                     ${ pkgs.coreutils }/bin/sleep ${ builtins.toString inc } &&
                                                                                                     ${ pkgs.coreutils }/bin/echo 1 > ${ environment-variable target }/signal &&
@@ -361,12 +363,10 @@
                                                                         OBJECT=${ environment-variable 2 } &&
                                                                         exec 200> ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock &&
                                                                         ${ pkgs.flock }/bin/flock 200 &&
-                                                                        ${ pkgs.coreutils }/bin/echo "RECORDING ${ environment-variable "NAME" }=${ environment-variable "OBJECT" }" &&
                                                                         ${ pkgs.coreutils }/bin/mkdir ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" } &&
-                                                                        ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-signal" record-signal } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" | ${ at } now  > /dev/null 2>&1 &&
-                                                                        ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-change" record-change } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" delete_self | ${ at } now  > /dev/null 2>&1 &&
-                                                                        ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-change" record-change } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" move_self | ${ at } now  > /dev/null 2>&1 &&
-                                                                        # ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-evictor" record-evictor } ${ environment-variable "OBJECT" }/init.evictor.asc ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" | ${ at } now  > /dev/null 2>&1 &&
+                                                                        ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-signal" record-signal } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" | ${ at } now >> /build/debug 2>&1 &&
+                                                                        # ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-change" record-change } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" delete_self | ${ at } now &&
+                                                                        # ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record-change" record-change } ${ environment-variable "OBSERVED_DIRECTORY" } ${ environment-variable "NAME" } ${ environment-variable "OBJECT" }" move_self | ${ at } now &&
                                                                         ${ pkgs.coreutils }/bin/rm ${ environment-variable "OBSERVED_DIRECTORY" }/${ environment-variable "NAME" }.lock
                                                                 '' ;
                                                             record-change =
@@ -415,7 +415,7 @@
                                                                                 ${ pkgs.findutils }/bin/find ${ environment-variable "OBJECT" } -mindepth 1 -maxdepth 1 -type f | while read FILE
                                                                                 do
                                                                                     BASE_NAME=$( ${ pkgs.coreutils }/bin/basename ${ environment-variable "FILE" } ) &&
-                                                                                        if [ ${ environment-variable "BASE_NAME" } == "init.evictor.asc" ]
+                                                                                        if [ ${ environment-variable "BASE_NAME" } == "evictor" ]
                                                                                         then
                                                                                             ${ pkgs.coreutils }/bin/true
                                                                                         else
@@ -470,6 +470,14 @@
                                                                     ${ pkgs.coreutils }/bin/echo "${ pkgs.writeShellScript "record" record } a $( ${ pkgs.coreutils }/bin/echo 7a9d3ae5dfba52e1707dcc08df3b4a334bbd87491678845e2544fa53dcd53050f390b00978d0d079a64e9c026a32e9946b14d32bebb98e439d929f43b37b2cf8 | ${ resource1.alpha } fast 0 af9dc7d3f6b1b4f03f47a0705ad0bcdb5d35514a9843d3f241bcda7a8ebfafe312a69500bfec39834e21da97f0c040d71581ef80257d29a7bdd1f8b326b634c3 )" | ${ at } now > /dev/null 2>&1 &&
                                                                     ${ pkgs.coreutils }/bin/sleep ${ builtins.toString ( 33 * inc ) } &&
                                                                     export EXPECTED_DIRECTORY=${ ./expected } &&
+                                                                    ${ pkgs.coreutils }/bin/cat /build/debug &&
+                                                                    # ${ pkgs.findutils }/bin/find /build -mindepth 1 -type f | while read FILE
+                                                                    # do
+                                                                    #     ${ pkgs.coreutils }/bin/echo &&
+                                                                    #         ${ pkgs.coreutils }/bin/dirname ${ environment-variable "FILE" } &&
+                                                                    #         ${ pkgs.coreutils }/bin/basename ${ environment-variable "FILE" } &&
+                                                                    #         ${ pkgs.coreutils }/bin/cat ${ environment-variable "FILE" }
+                                                                    # done &&
                                                                     ${ pkgs.bash_unit }/bin/bash_unit ${ pkgs.writeShellScript "test" test }
                                                             '' ;
                                             } ;
