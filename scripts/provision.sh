@@ -1,4 +1,5 @@
-HASH=$( ${ECHO} ${PREHASH} $(( ${TIMESTAMP} / ${DURATION} )) | ${SHA512SUM} | ${CUT} --bytes -128 ) &&
+source ${MAKE_WRAPPER}/nix-support/setup-hook
+  HASH=$( ${ECHO} ${PREHASH} $(( ${TIMESTAMP} / ${DURATION} )) | ${SHA512SUM} | ${CUT} --bytes -128 ) &&
   exec 201> ${HOST_PATH}/${HASH}.lock &&
   if ${FLOCK} 201
   then
