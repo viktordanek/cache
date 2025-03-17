@@ -1,0 +1,28 @@
+name: Auto Close Stale PRs
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily at midnight
+  workflow_dispatch:  # Allows manual trigger
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  close_stale_prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Close stale PRs older than 7 days
+        run: |
+          #!/bin/bash
+          set -e  # Stop on errors
+
+          # Fetch all pull requests
+          prs=$(curl -s -H "Authorization: Bearer $GH_PAT" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls?state=open

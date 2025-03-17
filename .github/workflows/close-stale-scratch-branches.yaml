@@ -1,0 +1,47 @@
+name: Delete Stale Scratch Branches
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: read
+  pull-requests: read
+jobs:
+  delete_stale_scratch_branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Close Scratch Branches older than 1 week
+        run: |
+          #!/bin/bash
+          set -e  # Stop on errors
+          # Ensure we're on main branch
+          git checkout main
+          git fetch origin --prune
+          # Get current date in seconds
+          current_date=$(date +%s)
+          # Debug: Print all branches
+          echo "Found branches:"
+          git for-each-ref --sort=committerdate --format='%(refname:short) %(committerdate:iso8601)' refs/remotes/origin/
+          # Get all remote branches
+          branches=$(git for-each-ref --sort=committerdate --format='%(refname:short)' refs/remotes/origin/)
+          for branch in $branches; do
+              # Remove "origin/" prefix
+              local_branch=${branch#origin/}
+              if [[ "$local_branch" == issue/* ]]; then
+                  last_commit_date=$(git log -1 --format="%ct" "origin/$local_branch")
+                  age=$(( (current_date - last_commit_date) / 86400 ))
+                  if [ "$age" -gt 7 ]; then
+                      echo "Deleting remote branch: $local_branch (Age: $age days)"
+                      git push origin --delete "$local_branch"
+                  else
+                      echo "Keeping: $local_branch (Age: $age days)"
+                  fi
+              else
+                  echo "Skipping branch: $local_branch (Not a scratch branch)"
+              fi
+          done
