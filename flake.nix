@@ -15,9 +15,10 @@
                                     activation ? null ,
                                     at ? "/run/wrappers/bin/at" ,
                                     duration ? 60 * 60 ,
-                                    initializer ? 66 ,
+                                    flock-error ? 66 ,
+                                    initializer ? 67 ,
                                     post ? null ,
-                                    standard-error ? 67 ,
+                                    standard-error ? 68 ,
                                     tests ? null
                                 } :
                                     let
@@ -29,6 +30,7 @@
                                                     else builtins.throw "activation is not null, string but ${ builtins.typeOf activation }." ;
                                                 at = if builtins.typeOf at == "string" then at else builtins.throw "at is not string but ${ builtins.typeOf at }." ;
                                                 duration = if builtins.typeOf duration == "int" then builtins.toString duration else builtins.throw "duration is not int but ${ builtins.typeOf duration }." ;
+                                                flock-error = if builtins.typeOf flock-error == "int" then builtins.toString flock-error else builtins.throw "flock-error is not int but ${ builtins.typeOf flock-error }." ;
                                                 initializer = if builtins.typeOf initializer == "int" then builtins.toString initializer else builtins.throw "initializer is not int but ${ builtins.typeOf initializer }." ;
                                                 post =
                                                     if builtins.typeOf post == "null" then post
