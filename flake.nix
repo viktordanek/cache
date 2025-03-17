@@ -44,6 +44,24 @@
                                                     else if builtins.typeOf tests == "set" then tests
                                                     else builtins.throw "tests is not lambda, list, null, set but ${ builtins.typeOf tests }." ;
                                             } ;
+                                        provision =
+                                            activation : duration : post : host-path :
+                                                let
+                                                    evict = null ;
+                                                    keep = null ;
+                                                    provision = null ;
+                                                    in
+                                                        pkgs.stdenv.mkDerivation
+                                                            {
+                                                                installPhase =
+                                                                    ''
+                                                                        ${ pkgs.coreutils }/bin/mkdir $out &&
+                                                                            ${ pkgs.coreutils }/bin/mkdir $out/bin &&
+                                                                            makeWrapper ${ provision } $out/bin/cache
+                                                                    '' ;
+                                                                name = "provision" ;
+                                                                src = ./. ;
+                                                            } ;
                                         in { } ;
                             in
                                 {
