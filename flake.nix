@@ -140,9 +140,27 @@
                                                                 name = "provision" ;
                                                                 src = ./. ;
                                                             } ;
-                                        in { } ;
+                                        in
+                                            {
+                                                cache = provision primary.activation primary.duration primary.post ;
+                                            } ;
+                            pkgs = builtins.import nixpkgs { system = system ; } ;                                                            
                             in
                                 {
+                                    checks =
+                                        {
+                                            foobar =
+                                                pkgs.stdenv.mkDerivation
+                                                    {
+                                                        installPhase =
+                                                            ''
+                                                                ${ pkgs.coreutils }/bin/mkdir $out &&
+                                                                    exit 64
+                                                            '' ;
+                                                        name = "foobar" ;
+                                                        src = ./. ;
+                                                    } ;
+                                        } ;
                                     lib = lib ;
                                 } ;
                 in flake-utils.lib.eachDefaultSystem fun ;
