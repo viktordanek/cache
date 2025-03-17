@@ -13,7 +13,6 @@
                             lib =
                                 {
                                     activation ? null ,
-                                    at ? "/run/wrappers/bin/at" ,
                                     duration ? 60 * 60 ,
                                     flock-error ? 66 ,
                                     initializer ? 67 ,
@@ -28,7 +27,6 @@
                                                     if builtins.typeOf activation == "null" then activation
                                                     else if builtins.typeOf activation == "string" then activation
                                                     else builtins.throw "activation is not null, string but ${ builtins.typeOf activation }." ;
-                                                at = if builtins.typeOf at == "string" then at else builtins.throw "at is not string but ${ builtins.typeOf at }." ;
                                                 duration = if builtins.typeOf duration == "int" then builtins.toString duration else builtins.throw "duration is not int but ${ builtins.typeOf duration }." ;
                                                 flock-error = if builtins.typeOf flock-error == "int" then builtins.toString flock-error else builtins.throw "flock-error is not int but ${ builtins.typeOf flock-error }." ;
                                                 initializer = if builtins.typeOf initializer == "int" then builtins.toString initializer else builtins.throw "initializer is not int but ${ builtins.typeOf initializer }." ;
@@ -144,7 +142,7 @@
                                             {
                                                 cache = provision primary.activation primary.duration primary.post ;
                                             } ;
-                            pkgs = builtins.import nixpkgs { system = system ; } ;                                                            
+                            pkgs = builtins.import nixpkgs { system = system ; } ;
                             in
                                 {
                                     checks =
@@ -153,10 +151,24 @@
                                                 pkgs.stdenv.mkDerivation
                                                     {
                                                         installPhase =
-                                                            ''
-                                                                ${ pkgs.coreutils }/bin/mkdir $out &&
-                                                                    exit 64
-                                                            '' ;
+                                                            let
+                                                                cache =
+                                                                    lib
+                                                                        {
+                                                                            activation = null ;
+                                                                            duration = 10 ;
+                                                                            flock-error = 69 ;
+                                                                            initializer = 70 ;
+                                                                            post = null ;
+                                                                            standard-error = 71 ;
+                                                                            tests = null ;
+                                                                        } ;
+                                                                in
+                                                                    ''
+                                                                        ${ pkgs.coreutils }/bin/mkdir $out &&
+                                                                            ${ pkgs.coreutils }/bin/echo ${ cache.cache "/tmp" } &&
+                                                                            exit 64
+                                                                    '' ;
                                                         name = "foobar" ;
                                                         src = ./. ;
                                                     } ;
