@@ -123,8 +123,8 @@
                                                                                 {
                                                                                     installPhase =
                                                                                         ''
-                                                                                            ${ pkgs.coreutils }/bin/cat ${ self + "/scripts/provision.sh" } $out &&
-                                                                                                ${ pkgs.coreutils }/bin/chmod 0555 %out
+                                                                                            ${ pkgs.coreutils }/bin/cat ${ self + "/scripts/provision.sh" } > $out &&
+                                                                                                ${ pkgs.coreutils }/bin/chmod 0555 $out
                                                                                         '' ;
                                                                                     name = "provision" ;
                                                                                     src = ./. ;
@@ -133,7 +133,7 @@
                                                                             ''
                                                                                 ${ pkgs.coreutils }/bin/mkdir $out &&
                                                                                     ${ pkgs.coreutils }/bin/mkdir $out/bin &&
-                                                                                    makeWrapper ${ provision } $out/bin/cache --set CUT ${ pkgs.coreutils }/bin/cut --set DURATION ${ duration } --set ECHO ${ pkgs.coreutils }/bin/echo --set FLOCK ${ pkgs.flock }/bin/flock --set HOST_PATH ${ host-path } --set INOTIFY_WAIT ${ pkgs.inotify-tools }/bin/inotify-wait --set KEEP ${ keep }--set MAKE_WRAPPER ${ pkgs.makeWrapper } --set MAKE_WRAPPER_EVICT ${ evict } --set PREHASH ${ builtins.hashString "sha512" ( builtins.concatStringsSep "" ( builtins.map builtins.toJSON [ activation duration post host-path ] ) ) } --set READLINK ${ pkgs.coreutils }/bin/readlink --set SHA512SUM ${ pkgs.coreutils }/bin/sha512sum --set TOUCH ${ pkgs.coreutils }/bin/touch
+                                                                                    makeWrapper provision  $out/bin/cache --set CUT ${ pkgs.coreutils }/bin/cut --set DURATION ${ duration } --set ECHO ${ pkgs.coreutils }/bin/echo --set FLOCK ${ pkgs.flock }/bin/flock --set HOST_PATH ${ host-path } --set INOTIFY_WAIT ${ pkgs.inotify-tools }/bin/inotify-wait --set KEEP ${ keep }--set MAKE_WRAPPER ${ pkgs.makeWrapper } --set MAKE_WRAPPER_EVICT ${ evict } --set PREHASH ${ builtins.hashString "sha512" ( builtins.concatStringsSep "" ( builtins.map builtins.toJSON [ activation duration post host-path ] ) ) } --set READLINK ${ pkgs.coreutils }/bin/readlink --set SHA512SUM ${ pkgs.coreutils }/bin/sha512sum --set TOUCH ${ pkgs.coreutils }/bin/touch
                                                                             '' ;
                                                                 name = "provision" ;
                                                                 src = ./. ;
@@ -166,7 +166,7 @@
                                                                 in
                                                                     ''
                                                                         ${ pkgs.coreutils }/bin/mkdir $out &&
-                                                                            ${ pkgs.coreutils }/bin/echo ${ cache.cache "/tmp" } &&
+                                                                            ${ pkgs.coreutils }/bin/echo ${ cache.cache "/tmp" }
                                                                             exit 64
                                                                     '' ;
                                                         name = "foobar" ;
