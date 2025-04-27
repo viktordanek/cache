@@ -188,9 +188,11 @@
                             lib =
                                 {
                                     archive ? "ARCHIVE" ,
+                                    hash-environment-variable ? "c9bb9f037cf14babdfaa55796ec801b380a6a01cada9dbce6c98d7a94348cd4b7000f4210a85494a0d6232a2376edf0163a0a7167f0557254b53781f52bf1eb7" ,
                                     init ? null ,
                                     initialization-error-code ? 66 ,
                                     lock-failure ? 64 ,
+                                    lifetime ? 60 ,
                                     over-initialized-target-error-code ? 68 ,
                                     post ? null ,
                                     release ? null ,
@@ -199,6 +201,7 @@
                                     shell-scripts ? { } ,
                                     stderr-emitted-error-code ? 67 ,
                                     tests ? null ,
+                                    timestamp-environment-variable ? "b2b7b179fda38e0fb100752777d9964c165bc6fc7d7c736f2661b2dc2a064774756543c1343cb038cd7200336ac522de954e757c220b0968f7cc1864f32dd97f" ,
                                     uninitialized-target-error-code ? 65 ,
                                 } :
                                     let
@@ -233,6 +236,11 @@
                                                 lock-failure =
                                                     if builtins.typeOf lock-failure == "int" then builtins.toString lock-failure
                                                     else builtins.throw "lock-failure is not int but ${ builtins.typeOf lock-failure }." ;
+                                                lifetime =
+                                                    if builtins.typeOf lifetime == "int" then
+                                                        if lifetime > 0 then lifetime
+                                                        else "non positive lifetimes like ${ builtins.toString lifetime } do not make sense"
+                                                    else builtins.throw "lifetime is not int but ${ builtins.typeOf lifetime }." ;
                                                 over-initialized-target-error-code =
                                                     if builtins.typeOf over-initialized-target-error-code == "int" then builtins.toString over-initialized-target-error-code
                                                     else builtins.throw "over-initialized-target-error-code is not int but ${ builtins.typeOf over-initialized-target-error-code }." ;
