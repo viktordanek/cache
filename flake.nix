@@ -527,6 +527,29 @@
                                                                 array =
                                                                     builtins.concatLists
                                                                         [
+                                                                            [ 0 ]
+                                                                            [ 1 ]
+                                                                            [ 2 ]
+                                                                            [ 3 ]
+                                                                            [ 4 ]
+                                                                            [ 5 ]
+                                                                            [ 6 ]
+                                                                            [ 7 ]
+                                                                            [ 8 ]
+                                                                            [ 9 ]
+                                                                            [ 10 ]
+                                                                            [ 11 ]
+                                                                            [ 12 ]
+                                                                            [ 13 ]
+                                                                            [ 14 ]
+                                                                            [ 15 ]
+                                                                            [ 16 ]
+                                                                            [ 17 ]
+                                                                            [ 18 ]
+                                                                            [ 19 ]
+                                                                            [ 20 ]
+                                                                            [ 21 ]
+                                                                            [ 22 ]
                                                                             [ 23 ]
                                                                             [ 24 ]
                                                                             [ 25 ]
@@ -565,6 +588,9 @@
                                                                             ( if builtins.typeOf primary.init == "null" then [ ] else [ 67 ] )
                                                                             ( if builtins.typeOf primary.init == "null" then [ ] else [ 68 ] )
                                                                             ( if builtins.typeOf primary.init == "null" then [ 70 ] else [ ] )
+                                                                            [ 72 ]
+                                                                            [ 73 ]
+                                                                            [ 74 ]
                                                                         ] ;
                                                                 with-index = builtins.genList ( index : { index = index ; line = builtins.elemAt all index ; } ) ( builtins.length all ) ;
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
