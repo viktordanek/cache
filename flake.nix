@@ -490,6 +490,7 @@
                                                                         [
                                                                             ( string "BASENAME" "${ pkgs.coreutils }/bin/basename" )
                                                                             ( string "CAT" "${ pkgs.coreutils }/bin/cat" )
+                                                                            ( string "HASH_ENVIRONMENT_VARIABLE" primary.hash-environment-variable )
                                                                             ( string "ECHO" "${ pkgs.coreutils }/bin/echo" )
                                                                             ( string "DIRNAME" "${ pkgs.coreutils }/bin/dirname" )
                                                                             ( string "FIND" "${ pkgs.findutils }/bin/find" )
@@ -508,6 +509,7 @@
                                                                             ( string "RESOURCES" ( _environment-variable primary.resources ) )
                                                                             ( standard-input "STANDARD_INPUT" )
                                                                             ( string "STDERR_EMITTED_ERROR_CODE" primary.stderr-emitted-error-code )
+                                                                            ( string "TIMESTAMP_ENVIRONMENT_VARIABLE" primary.timestamp-environment-variable )
                                                                             ( string "UNINITIALIZED_TARGET_ERROR_CODE" primary.uninitialized-target-error-code )
                                                                             ( string "WC" "${ pkgs.coreutils }/bin/wc" )
                                                                             ( string "MOUNT" "${ pkgs.mount }/bin/mount" ) # KLUDGE
