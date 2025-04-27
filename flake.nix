@@ -504,6 +504,7 @@
                                                                             ( string "INITIALIZATION_ERROR_CODE" primary.initialization-error-code )
                                                                             ( string "LOCK_FAILURE" primary.lock-failure )
                                                                             ( string "LN" "${ pkgs.coreutils }/bin/ln" )
+                                                                            ( string "LIFETIME" ( builtins.toString primary.lifetime ) )
                                                                             ( string "MAKE_WRAPPER" "${ pkgs.makeWrapper }" )
                                                                             ( string "MAKE_WRAPPER_TEARDOWN" "${ teardown.shell-script }" )
                                                                             ( string "MKDIR" "${ pkgs.coreutils }/bin/mkdir" )
