@@ -495,11 +495,13 @@
                                                                             ( string "ECHO" "${ pkgs.coreutils }/bin/echo" )
                                                                             ( string "DIRNAME" "${ pkgs.coreutils }/bin/dirname" )
                                                                             ( string "FIND" "${ pkgs.findutils }/bin/find" )
+                                                                            ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
                                                                             ( has-standard-input "HAS_STANDARD_INPUT" )
                                                                         ]
                                                                         ( if builtins.typeOf init == "null" then [ ] else [ ( string "INIT" primary.init.shell-script ) ] )
                                                                         [
                                                                             ( string "INITIALIZATION_ERROR_CODE" primary.initialization-error-code )
+                                                                            ( string "LOCK_FAILURE" primary.lock-failure )
                                                                             ( string "MAKE_WRAPPER" "${ pkgs.makeWrapper }" )
                                                                             ( string "MAKE_WRAPPER_TEARDOWN" "${ teardown.shell-script }" )
                                                                             ( string "MKDIR" "${ pkgs.coreutils }/bin/mkdir" )
