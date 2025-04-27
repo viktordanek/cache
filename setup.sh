@@ -21,23 +21,6 @@ fi &&
         ${LN} --symbolic ${RESOURCES}/${PARENT_HASH}/teardown.sh ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/${PARENT_HASH}.hash
       fi &&
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       export RESOURCE=$( ${MKTEMP} --directory ${RESOURCES}/XXXXXXXX ) &&
       export RESOURCE_NAME=$( ${BASENAME} ${RESOURCE} ) &&
       export TARGET_MOUNT=${RESOURCE}/mount &&
