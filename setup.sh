@@ -9,17 +9,17 @@ fi &&
   exec 201>${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}.lock &&
   if ${FLOCK} 201
   then
-
-
-
-
-
-
-
-
-
-
-
+    if [ ! -d ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE} ]
+    then
+      ${MKDIR} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}
+    fi &&
+      if [ ! -f ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/${ORIGINATOR_PID}.pid ]
+        ${ECHO} ${ORIGINATOR_PID} > ${RESOURCES}/${HASH_ENVIRONMENT_VARIABLE}/${ORIGINATOR_PID}.pid
+      fi &&
+      if [ ! -l ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/${PARENT_HASH}.hash ]
+      then
+        ${LN} --symbolic ${RESOURCES}/${PARENT_HASH}/teardown.sh ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/${PARENT_HASH}.hash
+      fi &&
 
 
 
