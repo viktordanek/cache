@@ -826,7 +826,7 @@
                                                                                                                                 ''${ _environment-variable "ECHO" } "- path: ${ builtins.replaceStrings [ "\"" ] [ "\\\"" ] ( builtins.toJSON value.path ) }"''
                                                                                                                                 ''${ _environment-variable "ECHO" } "  status: DELAYED"''
                                                                                                                                 ''${ _environment-variable "ECHO" } "  out: ${ value.value }"''
-                                                                                                                                ''${ value.value }/observe.wrapped.sh | ${ _environment-variable "YQ" } --yaml-output "{observe:.}" | ${ _environment-variable "SED" } -e "s#^#  #"''
+                                                                                                                                ''if ! ${ value.value }/observe.wrapped.sh | ${ _environment-variable "YQ" } --yaml-output "{observe:.}" | ${ _environment-variable "SED" } -e "s#^#  #" ; then exit 64 ; fi''
                                                                                                                                 ''${ _environment-variable "ECHO" } "  result: SUCCESS"''
                                                                                                                             ] ;
                                                                                                                     in builtins.concatLists ( builtins.map mapper metrics.delayed ) ;
