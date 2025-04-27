@@ -490,6 +490,7 @@
                                                                         [
                                                                             ( string "BASENAME" "${ pkgs.coreutils }/bin/basename" )
                                                                             ( string "CAT" "${ pkgs.coreutils }/bin/cat" )
+                                                                            ( string "CUT" "${ pkgs.coreutils }/bin/cut" )
                                                                             ( string "HASH_ENVIRONMENT_VARIABLE" primary.hash-environment-variable )
                                                                             ( string "DATE" "${ pkgs.coreutils }/bin/date" )
                                                                             ( string "ECHO" "${ pkgs.coreutils }/bin/echo" )
@@ -512,6 +513,7 @@
                                                                             ( string "PRE_HASH" ( builtins.hashString "sha512" ( builtins.toJSON [ primary.init primary.release primary.post primary.lifetime primary.self-teardown primary.force ] ) ) )
                                                                             ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                             ( string "RESOURCES" ( _environment-variable primary.resources ) )
+                                                                            ( string "SHA512SUM" "${ pkgs.coreutils }/bin/sha512sum" )
                                                                             ( standard-input "STANDARD_INPUT" )
                                                                             ( string "STDERR_EMITTED_ERROR_CODE" primary.stderr-emitted-error-code )
                                                                             ( string "TIMESTAMP_ENVIRONMENT_VARIABLE" primary.timestamp-environment-variable )
