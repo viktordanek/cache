@@ -4,7 +4,7 @@
             environment-variable.url = "github:/viktordanek/environment-variable" ;
             flake-utils.url = "github:numtide/flake-utils" ;
             nixpkgs.url = "github:NixOs/nixpkgs" ;
-            shell-script.url = "github:viktordanek/shell-script/scratch/4ecf7723-1ca2-448b-920e-078ae80588ce" ;
+            shell-script.url = "github:viktordanek/shell-script/scratch/650b5b06-46ca-4a02-b3eb-80a60c83ef7f" ;
             visitor.url = "github:viktordanek/visitor/scratch/1bd1c881-b72b-43d7-a819-f6072a9dfdf7" ;
         } ;
     outputs =
@@ -826,7 +826,7 @@
                                                                                                                                 ''${ _environment-variable "ECHO" } "- path: ${ builtins.replaceStrings [ "\"" ] [ "\\\"" ] ( builtins.toJSON value.path ) }"''
                                                                                                                                 ''${ _environment-variable "ECHO" } "  status: DELAYED $0"''
                                                                                                                                 ''${ _environment-variable "ECHO" } "  out: ${ value.value }"''
-                                                                                                                                ''if ${ value.value }/observe.wrapped.sh ; then ${ _environment-variable "ECHO" } "  result: SUCCESS 000-${ _environment-variable "?" }" ; else ${ _environment-variable "ECHO" } "  result: FAILURE" && exit 65 ; fi''
+                                                                                                                                ''if ${ value.value }/observe.wrapped.sh ; then ${ _environment-variable "ECHO" } "  result: SUCCESS ${ _environment-variable "?" }" ; else ${ _environment-variable "ECHO" } "  result: FAILURE" && exit 65 ; fi''
                                                                                                                             ] ;
                                                                                                                     in builtins.concatLists ( builtins.map mapper metrics.delayed ) ;
                                                                                                             error =
