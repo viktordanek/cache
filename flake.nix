@@ -189,6 +189,7 @@
                                 {
                                     archive ? "ARCHIVE" ,
                                     hash-environment-variable ? "c9bb9f037cf14babdfaa55796ec801b380a6a01cada9dbce6c98d7a94348cd4b7000f4210a85494a0d6232a2376edf0163a0a7167f0557254b53781f52bf1eb7" ,
+                                    force ? false ,
                                     init ? null ,
                                     initialization-error-code ? 66 ,
                                     lock-failure ? 64 ,
@@ -210,6 +211,12 @@
                                                 archive =
                                                     if builtins.typeOf archive == "string" then archive
                                                     else builtins.throw "archive is not string but ${ builtins.typeOf archive }." ;
+                                                force =
+                                                    if builtins.typeOf force == "bool" then force
+                                                    else builtins.throw "force is not bool but ${ builtins.typeOf force }." ;
+                                                hash-environment-variable =
+                                                    if builtins.typeOf hash-environment-variable == "string" then hash-environment-variable
+                                                    else builtins.throw "hash-environment-variable is not string but ${ builtins.typeOf hash-environment-variable }." ;
                                                 init =
                                                     if builtins.typeOf init == "null" then init
                                                     else if builtins.typeOf init == "set" then
@@ -295,6 +302,9 @@
                                                 resources =
                                                     if builtins.typeOf resources == "string" then resources
                                                     else builtins.throw "resources is not string but ${ builtins.typeOf resources }." ;
+                                                timestamp-environment-variable =
+                                                    if builtins.typeOf timestamp-environment-variable == "string" then timestamp-environment-variable
+                                                    else builtins.throw "timestamp-environment-variable is not string but ${ builtins.typeOf timestamp-environment-variable }." ;
                                                 self-teardown =
                                                     if builtins.typeOf self-teardown == "bool" then self-teardown
                                                     else builtins.throw "self-teardown is not bool but ${ builtins.typeOf self-teardown }." ;
