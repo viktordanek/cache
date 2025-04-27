@@ -19,10 +19,10 @@
                             lib =
                                 {
                                     init ,
+                                    lifespan ? 60 60 ,
                                     name ,
                                     resources ? "RESOURCES" ,
-                                    self-teardown ? true ,
-                                    time ? 60 * 60
+                                    self-teardown ? true
                                 } :
                                     let
                                         primary =
