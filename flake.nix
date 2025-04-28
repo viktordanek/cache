@@ -211,6 +211,12 @@
                                                 archive =
                                                     if builtins.typeOf archive == "string" then archive
                                                     else builtins.throw "archive is not string but ${ builtins.typeOf archive }." ;
+                                                force =
+                                                    if builtins.typeOf force == "bool" then force
+                                                    else builtins.throw "force is not bool but ${ builtins.typeOf force }." ;
+                                                hash-environment-variable =
+                                                    if builtins.typeOf hash-environment-variable == "string" then hash-environment-variable
+                                                    else builtins.throw "hash-environment-variable is not string but ${ builtins.typeOf hash-environment-variable }" ;
                                                 init =
                                                     if builtins.typeOf init == "null" then init
                                                     else if builtins.typeOf init == "set" then
@@ -234,6 +240,11 @@
                                                 initialization-error-code =
                                                     if builtins.typeOf initialization-error-code == "int" then builtins.toString initialization-error-code
                                                     else builtins.throw "initialization-error-code is not int but ${ builtins.typeOf initialization-error-code }." ;
+                                                lifespan =
+                                                    if builtins.typeOf lifespan == "int" then
+                                                        if lifespan > 0 then builtins.toString lifespan
+                                                        else builtins.throw "non positive lifespan ${ builtins.toString lifespan }"
+                                                    else builtins.throw "lifespan is not int but ${ builtins.typeOf lifespan }" ;
                                                 lock-failure =
                                                     if builtins.typeOf lock-failure == "int" then builtins.toString lock-failure
                                                     else builtins.throw "lock-failure is not int but ${ builtins.typeOf lock-failure }." ;
@@ -434,6 +445,9 @@
                                                             null = path : value : null ;
                                                         }
                                                         tests ;
+                                                timestamp-environment-variable =
+                                                    if builtins.typeOf timestamp-environment-variable == "string" then timestamp-environment-variable
+                                                    else builtins.throw "timestamp-environment-variable is not string but ${ builtins.typeOf timestamp-environment-variable }." ;
                                                 uninitialized-target-error-code =
                                                     if builtins.typeOf uninitialized-target-error-code == "int" then builtins.toString uninitialized-target-error-code
                                                     else builtins.throw "uninitialized-target-error-code is not int but ${ builtins.typeOf uninitialized-target-error-code }." ;
@@ -550,7 +564,7 @@
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
                                                                 simplified = builtins.map ( x : x.line ) filtered ;
                                                                 in builtins.toFile "setup" ( builtins.concatStringsSep "\n" simplified ) ;
-                                                        sleep = 90 ;
+                                                        sleep = 120 ;
                                                         tests = primary.tests ;
                                                     } ;
                                         setup = setup-fun false primary.self-teardown teardown ;
