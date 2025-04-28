@@ -192,7 +192,7 @@
                                     force ? false ,
                                     init ? null ,
                                     initialization-error-code ? 66 ,
-                                    lock-failure ? 64 ,
+                                    lock-failure ? 169 ,
                                     lifetime ? 60 ,
                                     over-initialized-target-error-code ? 68 ,
                                     post ? null ,
@@ -633,6 +633,7 @@
                                                                     [
                                                                         [
                                                                             ( string "ECHO" "${ pkgs.coreutils }/bin/echo" )
+                                                                            ( string "FIND" "${ pkgs.findutils }/bin/find" )
                                                                             ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
                                                                             ( string "LOCK_FAILURE" primary.lock-failure )
                                                                             ( string "MKTEMP" "${ pkgs.coreutils }/bin/mktemp" )
@@ -640,6 +641,7 @@
                                                                         ( if builtins.typeOf post == "null" then [ ] else [ ( string "POST" post.shell-script ) ] )
                                                                         ( if builtins.typeOf primary.release == "null" then [ ] else [ ( string "RELEASE" primary.release.shell-script ) ] )
                                                                         [
+                                                                            ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                             ( string "RESOURCE" "$( ${ _environment-variable "MKTEMP" } )" )
                                                                             ( string "RM" "${ pkgs.coreutils }/bin/rm" )
                                                                             ( string "TAIL" "${ pkgs.coreutils }/bin/tail" )
@@ -660,18 +662,29 @@
                                                                             [ 4 ]
                                                                             [ 5 ]
                                                                             [ 6 ]
-                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 8 ] )
-                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 9 ] )
-                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 10 ] )
-                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 11 ] )
-                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 12 ] )
-                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 13 ] )
-                                                                            ( if builtins.typeOf post == "null" then [ ] else [ 16 ] )
-                                                                            [ 18 ]
-                                                                            [ 19 ]
-                                                                            [ 20 ]
-                                                                            [ 21 ]
-                                                                            [ 22 ]
+                                                                            [ 7 ]
+                                                                            [ 8 ]
+                                                                            [ 9 ]
+                                                                            [ 10 ]
+                                                                            [ 11 ]
+                                                                            [ 12 ]
+                                                                            [ 13 ]
+                                                                            [ 14 ]
+                                                                            [ 15 ]
+                                                                            [ 16 ]
+                                                                            [ 17 ]
+                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 19 ] )
+                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 20 ] )
+                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 21 ] )
+                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 22 ] )
+                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 23 ] )
+                                                                            ( if builtins.typeOf primary.release == "null" then [ ] else [ 24 ] )
+                                                                            ( if builtins.typeOf post == "null" then [ ] else [ 27 ] )
+                                                                            [ 29 ]
+                                                                            [ 30 ]
+                                                                            [ 31 ]
+                                                                            [ 32 ]
+                                                                            [ 33 ]
                                                                         ] ;
                                                                 with-index = builtins.genList ( index : { index = index ; line = builtins.elemAt all index ; } ) ( builtins.length all ) ;
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
@@ -842,8 +855,8 @@
                                                                                                                                 ''${ _environment-variable "ECHO" } "- path: ${ builtins.replaceStrings [ "\"" ] [ "\\\"" ] ( builtins.toJSON value.path ) }"''
                                                                                                                                 ''${ _environment-variable "ECHO" } "  status: ERROR"''
                                                                                                                                 ''${ _environment-variable "ECHO" } "  out: ${ value.value }"''
-                                                                                                                                ''if ! ${ value.value }/observe.wrapped.sh ; then ${ _environment-variable "ECHO" } "  result: FAILURE" && exit 64 ; fi''
-                                                                                                                                "exit 64"
+                                                                                                                                ''if ! ${ value.value }/observe.wrapped.sh ; then ${ _environment-variable "ECHO" } "  result: FAILURE" && exit 164 ; fi''
+                                                                                                                                "exit 165"
                                                                                                                             ] ;
                                                                                                                     in builtins.concatLists ( builtins.map mapper metrics.error ) ;
                                                                                                             failure =
@@ -854,8 +867,8 @@
                                                                                                                                  ''${ _environment-variable "ECHO" } "- path: ${ builtins.replaceStrings [ "\"" ] [ "\\\"" ] ( builtins.toJSON value.path ) }"''
                                                                                                                                  ''${ _environment-variable "ECHO" } "  status: FAILURE"''
                                                                                                                                  ''${ _environment-variable "ECHO" } "  out: ${ value.value }"''
-                                                                                                                                 ''if ! ${ value.value }/observe.wrapped.sh ; then ${ _environment-variable "ECHO" } "  result: FAILURE" && exit 64 ; fi''
-                                                                                                                                 "exit 64"
+                                                                                                                                 ''if ! ${ value.value }/observe.wrapped.sh ; then ${ _environment-variable "ECHO" } "  result: FAILURE" && exit 166 ; fi''
+                                                                                                                                 "exit 167"
                                                                                                                             ] ;
                                                                                                                     in builtins.concatLists ( builtins.map mapper metrics.failure ) ;
                                                                                                             success =
@@ -866,7 +879,7 @@
                                                                                                                                 ''${ _environment-variable "ECHO" } "- path: ${ builtins.replaceStrings [ "\"" ] [ "\\\"" ] ( builtins.toJSON value.path ) }"''
                                                                                                                                 ''${ _environment-variable "ECHO" } "  status: SUCCESS"''
                                                                                                                                 ''${ _environment-variable "ECHO" } "  out: ${ value.value }"''
-                                                                                                                                 ''if ! ${ value.value }/observe.wrapped.sh ; then ${ _environment-variable "ECHO" } "  result: FAILURE" && exit 64 ; fi''
+                                                                                                                                 ''if ! ${ value.value }/observe.wrapped.sh ; then ${ _environment-variable "ECHO" } "  result: FAILURE" && exit 168 ; fi''
                                                                                                                             ] ;
                                                                                                                     in builtins.concatLists ( builtins.map mapper metrics.success ) ;
                                                                                                             in builtins.concatStringsSep " &&\n\t" ( builtins.concatLists [ error failure delayed success ] ) ;
