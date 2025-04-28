@@ -212,7 +212,7 @@
                                                     if builtins.typeOf archive == "string" then archive
                                                     else builtins.throw "archive is not string but ${ builtins.typeOf archive }." ;
                                                 force =
-                                                    if builtins.typeOf force == "bool" then force
+                                                    if builtins.typeOf force == "bool" then builtins.toJSON force
                                                     else builtins.throw "force is not bool but ${ builtins.typeOf force }." ;
                                                 hash-environment-variable =
                                                     if builtins.typeOf hash-environment-variable == "string" then hash-environment-variable
@@ -494,21 +494,26 @@
                                                                             ( string "ECHO" "${ pkgs.coreutils }/bin/echo" )
                                                                             ( string "DIRNAME" "${ pkgs.coreutils }/bin/dirname" )
                                                                             ( string "FIND" "${ pkgs.findutils }/bin/find" )
+                                                                            ( string "FORCE" primary.force )
+                                                                            ( string "HASH_ENVIRONMENT_VARIABLE" primary.hash-environment-variable )
                                                                             ( has-standard-input "HAS_STANDARD_INPUT" )
                                                                         ]
                                                                         ( if builtins.typeOf init == "null" then [ ] else [ ( string "INIT" primary.init.shell-script ) ] )
                                                                         [
                                                                             ( string "INITIALIZATION_ERROR_CODE" primary.initialization-error-code )
+                                                                            ( string "LIFESPAN" primary.lifespan )
                                                                             ( string "MAKE_WRAPPER" "${ pkgs.makeWrapper }" )
                                                                             ( string "MAKE_WRAPPER_TEARDOWN" "${ teardown.shell-script }" )
                                                                             ( string "MKDIR" "${ pkgs.coreutils }/bin/mkdir" )
                                                                             ( string "MKTEMP" "${ pkgs.coreutils }/bin/mktemp" )
                                                                             ( originator-pid "ORIGINATOR_PID" )
                                                                             ( string "OVER_INITIALIZED_TARGET_ERROR_CODE" primary.over-initialized-target-error-code )
+                                                                            ( string "PRE_HASH" ( builtins.hashString "sha512" ( builtins.toJSON [ primary.init primary.release primary.post primary.self-teardown primary.force primary.lifespan ] ) ) )
                                                                             ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                             ( string "RESOURCES" ( _environment-variable "TMPDIR" ) )
                                                                             ( standard-input "STANDARD_INPUT" )
                                                                             ( string "STDERR_EMITTED_ERROR_CODE" primary.stderr-emitted-error-code )
+                                                                            ( string "TIMESTAMP_ENVIRONMENT_VARIABLE" primary.timestamp-environment-variable )
                                                                             ( string "UNINITIALIZED_TARGET_ERROR_CODE" primary.uninitialized-target-error-code )
                                                                             ( string "WC" "${ pkgs.coreutils }/bin/wc" )
                                                                             ( string "MOUNT" "${ pkgs.mount }/bin/mount" ) # KLUDGE
