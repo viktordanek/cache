@@ -22,6 +22,6 @@ echo II &&
 export ARCHIVE=$(mktemp -d) && export RESOURCES=$(mktemp -d) && time nix run .#1-1-1 &&
 date &&
 echo AFTER &&
-git commit -am` "" 
+git commit -am` "${@}" 
 `
 ```
