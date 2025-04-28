@@ -15,9 +15,9 @@ fi &&
     fi &&
       if [ ! -f ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/${ORIGINATOR_PID}.pid ]
       then
-        ${ECHO} ${ORIGINATOR_PID} > ${RESOURCES}/${HASH_ENVIRONMENT_VARIABLE}/${ORIGINATOR_PID}.pid
+        ${ECHO} ${ORIGINATOR_PID} > ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/${ORIGINATOR_PID}.pid
       fi &&
-      if [ ! -l ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/${PARENT_HASH}.hash ]
+      if [ ! -L ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/${PARENT_HASH}.hash ]
       then
         ${LN} --symbolic ${RESOURCES}/${PARENT_HASH}/teardown.sh ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/${PARENT_HASH}.hash
       fi &&
@@ -48,12 +48,12 @@ fi &&
 #
       source ${MAKE_WRAPPER}/nix-support/setup-hook &&
 #
-      makeWrapper ${MAKE_WRAPPER_TEARDOWN} ${RESOURCE}/teardown.sh --set HASH ${!HASH_ENVIRONMENT_VARIABLE} --set RESOURCES ${RESOURCES} --set STATUS 0 &&
+      makeWrapper ${MAKE_WRAPPER_TEARDOWN} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/teardown.sh --set HASH ${!HASH_ENVIRONMENT_VARIABLE} --set RESOURCES ${RESOURCES} --set STATUS 0 &&
 #
-      makeWrapper ${MAKE_WRAPPER_TEARDOWN} ${RESOURCE}/teardown.sh --set HASH ${!HASH_ENVIRONMENT_VARIABLE} --set STATUS ${STATUS} &&
+      makeWrapper ${MAKE_WRAPPER_TEARDOWN} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/teardown.sh --set HASH ${!HASH_ENVIRONMENT_VARIABLE} --set STATUS ${STATUS} &&
 #
 #
-      ( ${RESOURCE}/teardown.sh > /dev/null 2>&1 & ) && ## KLUDGE ALERT:  We should not have to redirect standard output and error.  this probably indicates an error. FIXME UNCOMMENT ME
+      ( ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/teardown.sh > /dev/null 2>&1 & ) && ## KLUDGE ALERT:  We should not have to redirect standard output and error.  this probably indicates an error. FIXME UNCOMMENT ME
 #
 #
       if [ ${STATUS} != 0 ]

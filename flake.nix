@@ -4,7 +4,7 @@
             environment-variable.url = "github:/viktordanek/environment-variable" ;
             flake-utils.url = "github:numtide/flake-utils" ;
             nixpkgs.url = "github:NixOs/nixpkgs" ;
-            shell-script.url = "github:viktordanek/shell-script/scratch/650b5b06-46ca-4a02-b3eb-80a60c83ef7f" ;
+            shell-script.url = "github:viktordanek/shell-script/scratch/25055790-bcfe-46ef-9080-a2b8c02124a8" ;
             visitor.url = "github:viktordanek/visitor/scratch/1bd1c881-b72b-43d7-a819-f6072a9dfdf7" ;
         } ;
     outputs =
@@ -430,7 +430,8 @@
                                                                                                         unique-vars =
                                                                                                             if builtins.typeOf secondary.paste == "list" then
                                                                                                                 [
-                                                                                                                    ''${ _environment-variable "ECHO" } -n $( ${ _environment-variable "ECHO" } -e "${ builtins.concatStringsSep "\n" ( builtins.genList ( index : _environment-variable "CANDIDATE_${ builtins.toString index }" ) secondary.count ) }" | ${ _environment-variable "SORT" } | ${ _environment-variable "UNIQ" } | ${ _environment-variable "WC" } --lines )''
+                                                                                                                    ''${ _environment-variable "ECHO" } -n $( ${ _environment-variable "ECHO" } -e "${ builtins.concatStringsSep "\n" ( builtins.genList ( index : _environment-variable "CANDIDATE_${ builtins.toString index }" ) secondary.count ) }" | ${ pkgs.coreutils }/bin/sort | ${ pkgs.coreutils }/bin/uniq | ${ pkgs.coreutils }/bin/wc --lines )''
+
                                                                                                                 ]
                                                                                                             else [ ] ;
                                                                                                         in builtins.concatStringsSep " &&\n\t" ( builtins.concatLists [ ( builtins.concatLists ( builtins.genList generator secondary.count ) ) unique-vars ] )
@@ -513,7 +514,7 @@
                                                                             ( string "OVER_INITIALIZED_TARGET_ERROR_CODE" primary.over-initialized-target-error-code )
                                                                             ( string "PRE_HASH" ( builtins.hashString "sha512" ( builtins.toJSON [ primary.init primary.release primary.post primary.lifetime primary.self-teardown primary.force ] ) ) )
                                                                             ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
-                                                                            ( string "RESOURCES" ( _environment-variable primary.resources ) )
+                                                                            ( string "RESOURCES" ( _environment-variable "TMPDIR" ) )
                                                                             ( string "SHA512SUM" "${ pkgs.coreutils }/bin/sha512sum" )
                                                                             ( standard-input "STANDARD_INPUT" )
                                                                             ( string "STDERR_EMITTED_ERROR_CODE" primary.stderr-emitted-error-code )
@@ -600,7 +601,7 @@
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
                                                                 simplified = builtins.map ( x : x.line ) filtered ;
                                                                 in builtins.toFile "setup" ( builtins.concatStringsSep "\n" simplified ) ;
-                                                        sleep = 10 ;
+                                                        sleep = 60 ;
                                                         tests = primary.tests ;
                                                     } ;
                                         setup = setup-fun false primary.self-teardown teardown ;
