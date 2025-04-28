@@ -188,8 +188,11 @@
                             lib =
                                 {
                                     archive ? "ARCHIVE" ,
+                                    force ? false ,
+                                    hash-environment-variable ? "c32c462f49d9317a088e39c59b62a5516037ea2f0fdaa314d09e6e68d83a4757459a9718cc7bfdf70aa0b89347ee8768ba0e96628cb8ae0e6a4e3f2f29d3ad05" ,
                                     init ? null ,
                                     initialization-error-code ? 66 ,
+                                    lifespan ? 60 * 60 * 24 * 7 ,
                                     lock-failure ? 64 ,
                                     over-initialized-target-error-code ? 68 ,
                                     post ? null ,
@@ -199,6 +202,7 @@
                                     shell-scripts ? { } ,
                                     stderr-emitted-error-code ? 67 ,
                                     tests ? null ,
+                                    timestamp-environment-variable ? "f25ef6ec682263f9453925999f2ced6ee17d0ce8687fad67b1d6220493c4c39d4131e322e495c1ca6725446d68d3e9ccac804def286fb6491dc758beaba59477" ,
                                     uninitialized-target-error-code ? 65 ,
                                 } :
                                     let
@@ -546,7 +550,7 @@
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
                                                                 simplified = builtins.map ( x : x.line ) filtered ;
                                                                 in builtins.toFile "setup" ( builtins.concatStringsSep "\n" simplified ) ;
-                                                        sleep = 60 ;
+                                                        sleep = 90 ;
                                                         tests = primary.tests ;
                                                     } ;
                                         setup = setup-fun false primary.self-teardown teardown ;
