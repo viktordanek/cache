@@ -1,0 +1,6 @@
+#! /nix/store/9nw8b61s8lfdn8fkabxhbz0s775gjhbr-bash-5.2p37/bin/bash -e
+export ORIGINATOR_PID='${ORIGINATOR_PID}'
+export RESOURCE_NAME='${RESOURCE_NAME}'
+export RESOURCES='${RESOURCES}'
+export STATUS='19'
+exec ${SCRIPT} ${@}

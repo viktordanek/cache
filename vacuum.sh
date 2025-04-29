@@ -19,8 +19,8 @@ INDEX=$( ${FIND} /archive -mindepth 1 -maxdepth 1 -type d | ${WC} --lines ) &&
         # THIS IS BECAUSE WE ARE VACUMMING THE PIDs, PARENT_HASH, and FLAGs
         ${RM} /archive/${INDEX}/release.standard-output
   fi &&
-  ${RM} --force /archive/${INDEX}/*.pid &&
-  ${RM} --force /archive/${INDEX}/*.hash &&
+  ${RM} --recursive --force /archive/${INDEX}/*.pid &&
+  ${RM} --recursive --force /archive/${INDEX}/*.hash &&
   if [ ${INDEX} != 0 ] && [ -z $( ${DIFF} /archive/0 /archive/${INDEX} ) ]
   then
     ${RM} --recursive --force /archive/${INDEX}
