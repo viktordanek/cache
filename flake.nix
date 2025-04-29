@@ -512,6 +512,7 @@
                                                                         [
                                                                             ( string "INITIALIZATION_ERROR_CODE" primary.initialization-error-code )
                                                                             ( string "LIFESPAN" primary.lifespan )
+                                                                            ( string "LN" "${ pkgs.coreutils }/bin/ln" )
                                                                             ( string "LOCK_FAILURE" primary.lock-failure )
                                                                             ( string "MAKE_WRAPPER" "${ pkgs.makeWrapper }" )
                                                                             ( string "MAKE_WRAPPER_TEARDOWN" "${ teardown.shell-script }" )
@@ -526,6 +527,7 @@
                                                                             ( standard-input "STANDARD_INPUT" )
                                                                             ( string "STDERR_EMITTED_ERROR_CODE" primary.stderr-emitted-error-code )
                                                                             ( string "TIMESTAMP_ENVIRONMENT_VARIABLE" primary.timestamp-environment-variable )
+                                                                            ( string "TOUCH" "${ pkgs.coreutils }/bin/touch" )
                                                                             ( string "TRUE" "${ pkgs.coreutils }/bin/true" )
                                                                             ( string "UNINITIALIZED_TARGET_ERROR_CODE" primary.uninitialized-target-error-code )
                                                                             ( string "WC" "${ pkgs.coreutils }/bin/wc" )
@@ -597,6 +599,21 @@
                                                                             [ 73 ]
                                                                             [ 74 ]
                                                                             [ 75 ]
+                                                                            [ 76 ]
+                                                                            [ 77 ]
+                                                                            [ 78 ]
+                                                                            [ 79 ]
+                                                                            [ 80 ]
+                                                                            [ 81 ]
+                                                                            [ 82 ]
+                                                                            [ 83 ]
+                                                                            [ 84 ]
+                                                                            [ 85 ]
+                                                                            [ 86 ]
+                                                                            [ 87 ]
+                                                                            [ 88 ]
+                                                                            [ 89 ]
+                                                                            [ 90 ]
                                                                         ] ;
                                                                 with-index = builtins.genList ( index : { index = index ; line = builtins.elemAt all index ; } ) ( builtins.length all ) ;
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
