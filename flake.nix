@@ -503,6 +503,7 @@
                                                                             ( string "ECHO" "${ pkgs.coreutils }/bin/echo" )
                                                                             ( string "DIRNAME" "${ pkgs.coreutils }/bin/dirname" )
                                                                             ( string "FIND" "${ pkgs.findutils }/bin/find" )
+                                                                            ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
                                                                             ( string "FORCE" primary.force )
                                                                             ( string "HASH_ENVIRONMENT_VARIABLE" primary.hash-environment-variable )
                                                                             ( has-standard-input "HAS_STANDARD_INPUT" )
@@ -511,6 +512,7 @@
                                                                         [
                                                                             ( string "INITIALIZATION_ERROR_CODE" primary.initialization-error-code )
                                                                             ( string "LIFESPAN" primary.lifespan )
+                                                                            ( string "LOCK_FAILURE" primary.lock-failure )
                                                                             ( string "MAKE_WRAPPER" "${ pkgs.makeWrapper }" )
                                                                             ( string "MAKE_WRAPPER_TEARDOWN" "${ teardown.shell-script }" )
                                                                             ( string "MKDIR" "${ pkgs.coreutils }/bin/mkdir" )
@@ -546,6 +548,9 @@
                                                                             [ 7 ]
                                                                             [ 8 ]
                                                                             [ 9 ]
+                                                                            [ 10 ]
+                                                                            [ 11 ]
+                                                                            [ 12 ]
                                                                             [ 20 ]
                                                                             [ 21 ]
                                                                             [ 22 ]
@@ -587,6 +592,10 @@
                                                                             [ 69 ]
                                                                             [ 70 ]
                                                                             [ 71 ]
+                                                                            [ 72 ]
+                                                                            [ 73 ]
+                                                                            [ 74 ]
+                                                                            [ 75 ]
                                                                         ] ;
                                                                 with-index = builtins.genList ( index : { index = index ; line = builtins.elemAt all index ; } ) ( builtins.length all ) ;
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
