@@ -602,8 +602,9 @@
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
                                                                 simplified = builtins.map ( x : x.line ) filtered ;
                                                                 in builtins.toFile "setup" ( builtins.concatStringsSep "\n" simplified ) ;
-                                                        sleep = 120 ;
+                                                        sleep = 240 ;
                                                         tests = primary.tests ;
+                                                        trace = false ;
                                                     } ;
                                         setup = setup-fun false primary.self-teardown teardown ;
                                         setup-mock = setup-fun true true teardown-mock ;
