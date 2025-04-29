@@ -23,4 +23,4 @@ echo II &&
 export ARCHIVE=$(mktemp -d ${WORK}/XXXXXXXX) && export RESOURCES=$(mktemp -d ${WORK}/XXXXXXXX) && time nix run .#1-1-1 &&
 date &&
 echo AFTER &&
-git commit -am "cache/test-and-commit ${@}"
+git commit -am "cache/test-and-commit ${@}" --allow-empty

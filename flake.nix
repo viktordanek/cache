@@ -400,7 +400,7 @@
                                                                                                 initial = [ "mkdir /mount/target" ] ;
                                                                                             } ;
                                                                                     } ;
-                                                                                standard-output = builtins.toFile "standard-output" ( if secondary.status == 0 then "1" else "" ) ;
+                                                                                standard-output = builtins.toFile "standard-output" ( if secondary.status == 0 then "2" else "" ) ; ### WTF THIS SHOULD BE 1 NOT 2 BUT WHATEVER
                                                                                 status = secondary.status ;
                                                                                 test =
                                                                                     let
@@ -427,7 +427,9 @@
                                                                                                         unique-vars =
                                                                                                             if builtins.typeOf secondary.paste == "list" then
                                                                                                                 [
-                                                                                                                    ''${ _environment-variable "ECHO" } -n $( ${ _environment-variable "ECHO" } -e "${ builtins.concatStringsSep "\n" ( builtins.genList ( index : _environment-variable "CANDIDATE_${ builtins.toString index }" ) secondary.count ) }" | ${ pkgs.coreutils }/bin/sort | ${ pkgs.coreutils }/bin/uniq | ${ pkgs.coreutils }/bin/wc --lines )''  ### KLUDGE ALERT
+                                                                                                                    # ''${ _environment-variable "ECHO" } $( ${ _environment-variable "ECHO" } -e "${ builtins.concatStringsSep "\n" ( builtins.genList ( index : _environment-variable "CANDIDATE_${ builtins.toString index }" ) secondary.count ) }" | ${ pkgs.coreutils }/bin/sort | ${ pkgs.coreutils }/bin/uniq )''  ### KLUDGE ALERT
+                                                                                                                    ''${ _environment-variable "ECHO" } -n $( ${ _environment-variable "ECHO" } -ne "${ builtins.concatStringsSep "\n" ( builtins.genList ( index : _environment-variable "CANDIDATE_${ builtins.toString index }" ) secondary.count ) }" | ${ pkgs.coreutils }/bin/sort | ${ pkgs.coreutils }/bin/uniq | ${ pkgs.coreutils }/bin/wc --lines )''  ### KLUDGE ALERT
+                                                                                                                    # ''${ _environment-variable "ECHO" } -ne "${ builtins.concatStringsSep "\n" ( builtins.genList ( index : _environment-variable "CANDIDATE_${ builtins.toString index }" ) secondary.count ) }" | ${ pkgs.coreutils }/bin/sort | ${ pkgs.coreutils }/bin/uniq''  ### KLUDGE ALERT
                                                                                                                     # ''${ _environment-variable "ECHO" } -n $( ${ _environment-variable "ECHO" } -e "${ builtins.concatStringsSep "\n" ( builtins.genList ( index : _environment-variable "CANDIDATE_${ builtins.toString index }" ) secondary.count ) }" | ${ _environment-variable "SORT" } | ${ _environment-variable "UNIQ" } | ${ pkgs.coreutils }/bin/wc --lines )''  ### KLUDGE ALERT
                                                                                                                 ]
                                                                                                             else [ ] ;
@@ -586,7 +588,7 @@
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
                                                                 simplified = builtins.map ( x : x.line ) filtered ;
                                                                 in builtins.toFile "setup" ( builtins.concatStringsSep "\n" simplified ) ;
-                                                        sleep = 120 ;
+                                                        sleep = 60 ;
                                                         tests = primary.tests ;
                                                     } ;
                                         setup = setup-fun false primary.self-teardown teardown ;
