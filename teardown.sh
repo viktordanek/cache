@@ -3,9 +3,39 @@ exec 201> /mount/${RESOURCE_NAME}/lock &&
   then
    if [ ${STATUS} == 0 ]
     then
+      TIMEOUT=$(( ${LIFESPAN} - ( $( ${DATE} +%s ) % ${LIFESPAN} ) )) &&
       ${TAIL} --follow /dev/null --pid ${ORIGINATOR_PID}
-    fi && export RESOURCE=/mount/${RESOURCE_NAME} &&
-#
+    fi &&
+    export RESOURCE=/mount/${RESOURCE_NAME} &&
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 8
     if ${RELEASE} > /mount/${RESOURCE_NAME}/release.standard-output 2> /mount/${RESOURCE_NAME}/release.standard-error
     then
       ${ECHO} ${?} > /mount/${RESOURCE_NAME}/release.status
