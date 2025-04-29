@@ -62,14 +62,14 @@ fi &&
         then
           exit ${STDERR_EMITTED_ERROR_CODE}
         else
-          ${ECHO} ${TARGET}
+          ${TRUE}
         fi
 #
-        ${ECHO} ${TARGET}
+        ${TRUE}
 #
-    else
-      ${ECHO} ${HASH}
     fi &&
+      ${ECHO} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}
+
     ${RM} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}.lock
   else
     exit ${LOCK_FAILURE}

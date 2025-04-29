@@ -404,7 +404,7 @@
                                                                                                 initial = [ "mkdir /mount/target" ] ;
                                                                                             } ;
                                                                                     } ;
-                                                                                standard-output = builtins.toFile "standard-output" ( if secondary.status == 0 then "2" else "" ) ; ### WTF THIS SHOULD BE 1 NOT 2 BUT WHATEVER
+                                                                                standard-output = builtins.toFile "standard-output" ( if secondary.status == 0 then "1" else "" ) ;
                                                                                 status = secondary.status ;
                                                                                 test =
                                                                                     let
@@ -526,6 +526,7 @@
                                                                             ( standard-input "STANDARD_INPUT" )
                                                                             ( string "STDERR_EMITTED_ERROR_CODE" primary.stderr-emitted-error-code )
                                                                             ( string "TIMESTAMP_ENVIRONMENT_VARIABLE" primary.timestamp-environment-variable )
+                                                                            ( string "TRUE" "${ pkgs.coreutils }/bin/true" )
                                                                             ( string "UNINITIALIZED_TARGET_ERROR_CODE" primary.uninitialized-target-error-code )
                                                                             ( string "WC" "${ pkgs.coreutils }/bin/wc" )
                                                                             ( string "MOUNT" "${ pkgs.mount }/bin/mount" ) # KLUDGE
@@ -601,7 +602,7 @@
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
                                                                 simplified = builtins.map ( x : x.line ) filtered ;
                                                                 in builtins.toFile "setup" ( builtins.concatStringsSep "\n" simplified ) ;
-                                                        sleep = 60 ;
+                                                        sleep = 120 ;
                                                         tests = primary.tests ;
                                                     } ;
                                         setup = setup-fun false primary.self-teardown teardown ;

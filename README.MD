@@ -11,9 +11,9 @@ export ARCHIVE=$(mktemp -d) && export RESOURCES=$(mktemp -d) && time nix run .#0
 echo DD &&
 export ARCHIVE=$(mktemp -d) && export RESOURCES=$(mktemp -d) && time nix run .#0-1-0 &&
 echo EE &&
-export ARCHIVE=$(mktemp -d) && export RESOURCES=$(mktemp -d) && `time nix run .#0-1-1` &&
+export ARCHIVE=$(mktemp -d) && export RESOURCES=$(mktemp -d) && time nix run .#0-1-1 &&
 echo FF &&
-export ARCHIVE=$(mktemp -d) && export RESOURCES=$(mktemp -d) && ``time nix run .#1-0-0`` &&
+export ARCHIVE=$(mktemp -d) && export RESOURCES=$(mktemp -d) && time nix run .#1-0-0 &&
 echo GG &&
 export ARCHIVE=$(mktemp -d) && export RESOURCES=$(mktemp -d) && time nix run .#1-0-1 `&&
 echo HH &&
