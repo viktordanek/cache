@@ -198,6 +198,7 @@
                                     post ? null ,
                                     release ? null ,
                                     resources ? "RESOURCES" ,
+                                    seed ? "" ,
                                     self-teardown ? true ,
                                     shell-scripts ? { } ,
                                     stderr-emitted-error-code ? 67 ,
@@ -302,6 +303,9 @@
                                                 resources =
                                                     if builtins.typeOf resources == "string" then resources
                                                     else builtins.throw "resources is not string but ${ builtins.typeOf resources }." ;
+                                                seed =
+                                                    if builtins.typeOf seed == "string" then builtins.hashString "sha512" seed
+                                                    else builtins.throw "seed is not string but ${ builtins.typeOf seed }." ;
                                                 self-teardown =
                                                     if builtins.typeOf self-teardown == "bool" then self-teardown
                                                     else builtins.throw "self-teardown is not bool but ${ builtins.typeOf self-teardown }." ;
@@ -513,7 +517,7 @@
                                                                             ( string "MKTEMP" "${ pkgs.coreutils }/bin/mktemp" )
                                                                             ( originator-pid "ORIGINATOR_PID" )
                                                                             ( string "OVER_INITIALIZED_TARGET_ERROR_CODE" primary.over-initialized-target-error-code )
-                                                                            ( string "PRE_HASH" ( builtins.hashString "sha512" ( builtins.toJSON [ primary.init primary.release primary.post primary.self-teardown primary.force primary.lifespan ] ) ) )
+                                                                            ( string "PRE_HASH" ( builtins.hashString "sha512" ( builtins.toJSON [ primary.init primary.release primary.post primary.self-teardown primary.force primary.lifespan primary.seed ] ) ) )
                                                                             ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                             ( string "RESOURCES" ( _environment-variable "TMPDIR" ) )
                                                                             ( string "SHA512SUM" "${ pkgs.coreutils }/bin/sha512sum" )
