@@ -602,7 +602,7 @@
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
                                                                 simplified = builtins.map ( x : x.line ) filtered ;
                                                                 in builtins.toFile "setup" ( builtins.concatStringsSep "\n" simplified ) ;
-                                                        sleep = 240 ;
+                                                        sleep = 60 ;
                                                         tests = primary.tests ;
                                                         trace = false ;
                                                     } ;
