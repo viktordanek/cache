@@ -15,7 +15,8 @@
                         let
                             _environment-variable = builtins.getAttr system environment-variable.lib ;
                             _shell-script = builtins.getAttr system shell-script.lib ;
-                            _visitor = builtins.getAttr system visitor.lib ;                                                       
+                            _visitor = builtins.getAttr system visitor.lib ;
+                            inc = 1 ;
                             foobar =
                                 let
                                     init =
@@ -88,15 +89,15 @@
                                                         in failure // success ;
                                             in
                                                 [
-                                                    ( foobar "0-0-0" ( lib { tests = tests false false ; } ) )
-                                                    ( foobar "0-0-1" ( lib { post = post ; tests = tests false false ; } ) )
-                                                    ( foobar "0-1-0" ( lib { release = release ; tests = tests true false ; } ) )
-                                                    ( foobar "0-1-0" ( lib { release = release ; tests = tests true false ; } ) )
-                                                    ( foobar "0-1-1" ( lib { release = release ; post = post ; tests = tests true false ; } ) )
-                                                    ( foobar "1-0-0" ( lib { init = init ; tests = tests false true ; } ) )
-                                                    ( foobar "1-0-1" ( lib { init = init ; post = post ; tests = tests false true ; } ) )
-                                                    ( foobar "1-1-0" ( lib { init = init ; release = release ; tests = tests true true ; } ) )
-                                                    ( foobar "1-1-1" ( lib { init = init ; release = release ; post = post ; tests = tests true true ; } ) )
+                                                    ( foobar "0-0-0" ( lib { tests = tests false false ; lifespan = 2 * inc ; } ) )
+                                                    ( foobar "0-0-1" ( lib { post = post ; tests = tests false false ; lifespan = 2 * inc ; } ) )
+                                                    ( foobar "0-1-0" ( lib { release = release ; tests = tests true false ; lifespan = 2 * inc ; } ) )
+                                                    ( foobar "0-1-0" ( lib { release = release ; tests = tests true false ; lifespan = 2 * inc ; } ) )
+                                                    ( foobar "0-1-1" ( lib { release = release ; post = post ; tests = tests true false ; lifespan = 2 * inc ; } ) )
+                                                    ( foobar "1-0-0" ( lib { init = init ; tests = tests false true ; lifespan = 2 * inc ; } ) )
+                                                    ( foobar "1-0-1" ( lib { init = init ; post = post ; tests = tests false true ; lifespan = 2 * inc ; } ) )
+                                                    ( foobar "1-1-0" ( lib { init = init ; release = release ; tests = tests true true ; lifespan = 2 * inc ; } ) )
+                                                    ( foobar "1-1-1" ( lib { init = init ; release = release ; post = post ; tests = tests true true ; lifespan = 2 * inc ; } ) )
                                                 ] ;
                                     post =
                                         {
@@ -443,7 +444,8 @@
                                                                                             pkgs.writeShellScript
                                                                                                 "outer"
                                                                                                 ''
-                                                                                                    ${ inner } &&
+                                                                                                    ${ pkgs.coreutils }/bin/sleep $(( ${ builtins.toString ( 4 * inc ) } - ( $( ${ pkgs.coreutils }/bin/date +%s ) % ${ builtins.toString ( 4 * inc ) } ) ))
+                                                                                                        ${ inner } &&
                                                                                                         ${ pkgs.coreutils }/bin/sleep 0.1s
                                                                                                 '' ;
                                                                                         in builtins.toString outer ;
@@ -650,6 +652,7 @@
                                                                             ( string "DATE" "${ pkgs.coreutils }/bin/date" )
                                                                             ( string "ECHO" "${ pkgs.coreutils }/bin/echo" )
                                                                             ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
+                                                                            ( string "INOTIFYWAIT" "${ pkgs.inotify-tools }/bin/inotifywait" )
                                                                             ( string "LIFESPAN" primary.lifespan )
                                                                             ( string "LOCK_FAILURE" primary.lock-failure )
                                                                             ( string "MKTEMP" "${ pkgs.coreutils }/bin/mktemp" )
@@ -679,6 +682,7 @@
                                                                             [ 6 ]
                                                                             [ 7 ]
                                                                             [ 8 ]
+                                                                            [ 9 ]
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 38 ] )
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 39 ] )
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 40 ] )
@@ -721,6 +725,7 @@
                                                                                         ( string "DATE" "${ pkgs.coreutils }/bin/date" )
                                                                                         ( string "ECHO" "${ pkgs.coreutils }/bin/echo" )
                                                                                         ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
+                                                                                        ( string "INOTIFYWAIT" "${ pkgs.inotify-tools }/bin/inotifywait" )
                                                                                         ( string "LIFESPAN" primary.lifespan )
                                                                                         ( string "LOCK_FAILURE" primary.lock-failure )
                                                                                         ( string "MKTEMP" "${ pkgs.coreutils }/bin/mktemp" )

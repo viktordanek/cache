@@ -4,10 +4,10 @@ exec 201> /mount/${RESOURCE_NAME}/lock &&
    if [ ${STATUS} == 0 ]
     then
       TIMEOUT=$(( ${LIFESPAN} - ( $( ${DATE} +%s ) % ${LIFESPAN} ) )) &&
-      ${TAIL} --follow /dev/null --pid ${ORIGINATOR_PID}
+        # ${INOTIFYWAIT} --event delete /mount/${RESOURCE_NAME}/TEARDOWN_START_FLAG --timeout ${TIMEOUT} &&
+        ${TAIL} --follow /dev/null --pid ${ORIGINATOR_PID}
     fi &&
     export RESOURCE=/mount/${RESOURCE_NAME} &&
-
 
 
 
