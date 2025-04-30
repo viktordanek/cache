@@ -651,6 +651,7 @@
                                                                         [
                                                                             ( string "DATE" "${ pkgs.coreutils }/bin/date" )
                                                                             ( string "ECHO" "${ pkgs.coreutils }/bin/echo" )
+                                                                            ( string "FIND" "${ pkgs.findutils }/bin/find" )
                                                                             ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
                                                                             ( string "INOTIFYWAIT" "${ pkgs.inotify-tools }/bin/inotifywait" )
                                                                             ( string "LIFESPAN" primary.lifespan )
@@ -681,6 +682,12 @@
                                                                             [ 7 ]
                                                                             [ 8 ]
                                                                             [ 9 ]
+                                                                            [ 10 ]
+                                                                            [ 11 ]
+                                                                            [ 12 ]
+                                                                            [ 13 ]
+                                                                            [ 14 ]
+                                                                            [ 15 ]
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 38 ] )
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 39 ] )
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 40 ] )
@@ -724,6 +731,7 @@
                                                                                         ( string "ARCHIVE" "/build" )
                                                                                         ( string "DATE" "${ pkgs.coreutils }/bin/date" )
                                                                                         ( string "ECHO" "${ pkgs.coreutils }/bin/echo" )
+                                                                                        ( string "FIND" "${ pkgs.findutils }/bin/find" )
                                                                                         ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
                                                                                         ( string "INOTIFYWAIT" "${ pkgs.inotify-tools }/bin/inotifywait" )
                                                                                         ( string "LIFESPAN" 1 )
