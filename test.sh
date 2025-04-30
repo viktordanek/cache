@@ -1,0 +1,4 @@
+CANDIDATE=${1} &&
+  TEMPORARY=$( ${CANDIDATE} ) &&
+  ${ECHO} ${CANDIDATE} &&
+  ${CAT} ${TEMPORARY}
