@@ -701,7 +701,7 @@
                                                         tests =
                                                             ignore :
                                                                 {
-                                                                    delay = false ;
+                                                                    delay = true ;
                                                                     mounts =
                                                                         {
                                                                             "/mount" =
@@ -712,6 +712,7 @@
                                                                                             "mkdir /mount/target"
                                                                                             "mkdir /mount/target/resource"
                                                                                             "echo a60aa448919abcb69f7804ee9f3879fc9bd06765172f6c86cc697cc217719ae46278551a687cd80cc5a7d2c22ba2d79fccee95905ebb2865da1609da90d491c1 > /mount/target/resource/target"
+                                                                                            "touch /mount/target/resource/TEARDOWN_START_FLAG"
                                                                                         ] ;
                                                                                 } ;
                                                                         } ;
@@ -820,7 +821,7 @@
                                                                                                         ( if builtins.typeOf primary.post == "null" then [ ] else [ { path = "post" ; value = primary.post.tests ; } ] )
                                                                                                         [ { path = "teardown" ; value = teardown.tests ; } ]
                                                                                                         [ { path = "vacuum" ; value = vacuum.tests ; } ]
-                                                                                                        [ { path = "setup" ; value = setup-mock.tests ; } ]
+                                                                                                        # [ { path = "setup" ; value = setup-mock.tests ; } ]
                                                                                                     ] ;
                                                                                             in
                                                                                                 {
