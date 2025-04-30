@@ -701,6 +701,7 @@
                                                         tests =
                                                             ignore :
                                                                 {
+                                                                    delay = false ;
                                                                     mounts =
                                                                         {
                                                                             "/mount" =
