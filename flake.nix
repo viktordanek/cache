@@ -654,6 +654,7 @@
                                                                             ( string "FIND" "${ pkgs.findutils }/bin/find" )
                                                                             ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
                                                                             ( string "INOTIFYWAIT" "${ pkgs.inotify-tools }/bin/inotifywait" )
+                                                                            ( string "KILL" "${ pkgs.coreutils }/bin/kill" )
                                                                             ( string "LIFESPAN" primary.lifespan )
                                                                             ( string "LOCK_FAILURE" primary.lock-failure )
                                                                             ( string "MKTEMP" "${ pkgs.coreutils }/bin/mktemp" )
@@ -661,6 +662,7 @@
                                                                         ( if builtins.typeOf post == "null" then [ ] else [ ( string "POST" post.shell-script ) ] )
                                                                         ( if builtins.typeOf primary.release == "null" then [ ] else [ ( string "RELEASE" primary.release.shell-script ) ] )
                                                                         [
+                                                                            ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                             ( string "RM" "${ pkgs.coreutils }/bin/rm" )
                                                                             ( string "TAIL" "${ pkgs.coreutils }/bin/tail" )
                                                                             ( string "TRUE" "${ pkgs.coreutils }/bin/true" )
@@ -710,6 +712,14 @@
                                                                             [ 35 ]
                                                                             [ 36 ]
                                                                             [ 37 ]
+                                                                            [ 38 ]
+                                                                            [ 39 ]
+                                                                            [ 40 ]
+                                                                            [ 41 ]
+                                                                            [ 42 ]
+                                                                            [ 43 ]
+                                                                            [ 44 ]
+                                                                            [ 45 ]
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 68 ] )
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 69 ] )
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 70 ] )
@@ -756,6 +766,7 @@
                                                                                         ( string "FIND" "${ pkgs.findutils }/bin/find" )
                                                                                         ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
                                                                                         ( string "INOTIFYWAIT" "${ pkgs.inotify-tools }/bin/inotifywait" )
+                                                                                        ( string "KILL" "${ pkgs.coreutils }/bin/kill" )
                                                                                         ( string "LIFESPAN" 1 )
                                                                                         ( string "LOCK_FAILURE" primary.lock-failure )
                                                                                         ( string "MKTEMP" "${ pkgs.coreutils }/bin/mktemp" )
@@ -764,6 +775,7 @@
                                                                                     ( if builtins.typeOf primary.post == "null" then [ ] else [ ( string "POST" primary.post.shell-script ) ] )
                                                                                     ( if builtins.typeOf primary.release == "null" then [ ] else [ ( string "RELEASE" primary.release.shell-script ) ] )
                                                                                     [
+                                                                                        ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                                         ( string "RESOURCE_NAME" "resource" )
                                                                                         ( string "RM" "${ pkgs.coreutils }/bin/rm" )
                                                                                         ( string "STATUS" 0 )

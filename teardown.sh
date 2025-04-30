@@ -1,5 +1,13 @@
 TIMEOUT=$(( ${LIFESPAN} - ( $( ${DATE} +%s ) % ${LIFESPAN} ) )) &&
   ( ${INOTIFYWAIT} --event delete /mount/${RESOURCE_NAME}/TEARDOWN_START_FLAG --timeout ${TIMEOUT} --quiet || ${TRUE} ) &&
+  if [ -f /mount/${RESOURCE_NAME/TEARDOWN_FORCE_FLAG} ]
+  then
+    ${FIND} /mount/${RESOURCE_NAME} -mindepth 1 -maxdepth 1 -type f -name "*.pid" | while read PID_FILE
+    do
+      PID=$( ${CAT} ${PID_FILE} ) &&
+        ${KILL} ${PID}
+    done
+  fi &&
   ${FIND} /mount/${RESOURCE_NAME} -mindepth 1 -maxdepth 1 -type l -name "*.hash" | while read HASH_LINK
   do
     DIRECTORY=$( ${READLINK} ${HASH_LINK} ) &&
@@ -36,14 +44,6 @@ TIMEOUT=$(( ${LIFESPAN} - ( $( ${DATE} +%s ) % ${LIFESPAN} ) )) &&
   if ${FLOCK} 201
   then
     export RESOURCE=/mount/${RESOURCE_NAME} &&
-
-
-
-
-
-
-
-
 
 
 
