@@ -12,10 +12,14 @@
 /resource/target
 a60aa448919abcb69f7804ee9f3879fc9bd06765172f6c86cc697cc217719ae46278551a687cd80cc5a7d2c22ba2d79fccee95905ebb2865da1609da90d491c1
 
+/resource/TEARDOWN_START_FLAG
+
 
 /resource/release.status
 0
 
 /resource/target
 a60aa448919abcb69f7804ee9f3879fc9bd06765172f6c86cc697cc217719ae46278551a687cd80cc5a7d2c22ba2d79fccee95905ebb2865da1609da90d491c1
+
+/resource/TEARDOWN_START_FLAG
 
