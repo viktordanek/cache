@@ -877,7 +877,7 @@
                                                                                                         ( if builtins.typeOf primary.post == "null" then [ ] else [ { path = "post" ; value = primary.post.tests ; } ] )
                                                                                                         [ { path = "teardown" ; value = teardown.tests ; } ]
                                                                                                         [ { path = "vacuum" ; value = vacuum.tests ; } ]
-                                                                                                        # [ { path = "setup" ; value = setup-mock.tests ; } ]
+                                                                                                        [ { path = "setup" ; value = setup-mock.tests ; } ]
                                                                                                     ] ;
                                                                                             in
                                                                                                 {
