@@ -1,10 +1,6 @@
-/resource/lock
-
 /resource/release.standard-error
 
 /resource/release.standard-output
-/resource/lock
-
 /resource/release.standard-error
 
 /resource/release.standard-output

@@ -726,7 +726,7 @@
                                                                                         ( string "ECHO" "${ pkgs.coreutils }/bin/echo" )
                                                                                         ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
                                                                                         ( string "INOTIFYWAIT" "${ pkgs.inotify-tools }/bin/inotifywait" )
-                                                                                        ( string "LIFESPAN" primary.lifespan )
+                                                                                        ( string "LIFESPAN" 1 )
                                                                                         ( string "LOCK_FAILURE" primary.lock-failure )
                                                                                         ( string "MKTEMP" "${ pkgs.coreutils }/bin/mktemp" )
                                                                                         ( string "ORIGINATOR_PID" 9999 )
