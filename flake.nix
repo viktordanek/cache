@@ -660,10 +660,8 @@
                                                                         ( if builtins.typeOf post == "null" then [ ] else [ ( string "POST" post.shell-script ) ] )
                                                                         ( if builtins.typeOf primary.release == "null" then [ ] else [ ( string "RELEASE" primary.release.shell-script ) ] )
                                                                         [
-                                                                            ( string "RESOURCE" "$( ${ _environment-variable "MKTEMP" } )" )
                                                                             ( string "RM" "${ pkgs.coreutils }/bin/rm" )
                                                                             ( string "TAIL" "${ pkgs.coreutils }/bin/tail" )
-                                                                            ( string "TARGET" "$( ${ _environment-variable "MKTEMP" } )" )
                                                                             ( string "TRUE" "${ pkgs.coreutils }/bin/true" )
                                                                         ]
                                                                     ] ;
@@ -735,11 +733,9 @@
                                                                                     ( if builtins.typeOf primary.release == "null" then [ ] else [ ( string "RELEASE" primary.release.shell-script ) ] )
                                                                                     [
                                                                                         ( string "RESOURCE_NAME" "resource" )
-                                                                                        ( string "RESOURCE" "$( ${ _environment-variable "MKTEMP" } )" )
                                                                                         ( string "RM" "${ pkgs.coreutils }/bin/rm" )
                                                                                         ( string "STATUS" 0 )
                                                                                         ( string "TAIL" "${ pkgs.coreutils }/bin/tail" )
-                                                                                        ( string "TARGET" "$( ${ _environment-variable "MKTEMP" } )" )
                                                                                         ( string "TRUE" "${ pkgs.coreutils }/bin/true" )
                                                                                     ]
                                                                                 ] ;
