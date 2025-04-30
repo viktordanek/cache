@@ -1,19 +1,19 @@
-exec 201> /mount/${RESOURCE_NAME}.lock &&
+TIMEOUT=$(( ${LIFESPAN} - ( $( ${DATE} +%s ) % ${LIFESPAN} ) )) &&
+  ( ${INOTIFYWAIT} --event delete /mount/${RESOURCE_NAME}/TEARDOWN_START_FLAG --timeout ${TIMEOUT} --quiet || ${TRUE} ) &&
+  ${FIND} /mount/${RESOURCE_NAME} -mindepth 1 -maxdepth 1 -type f -name "*.pid" | while read PID_FILE
+  do
+    PID=$( ${CAT} ${PID_FILE} ) &&
+      ${TAIL} --follow /dev/null --pid ${PID} &&
+      ${RM} ${PID_FILE}
+  done &&
+  exec 201> /mount/${RESOURCE_NAME}.lock &&
   if ${FLOCK} 201
   then
-   if [ ${STATUS} == 0 ]
-    then
-      TIMEOUT=$(( ${LIFESPAN} - ( $( ${DATE} +%s ) % ${LIFESPAN} ) )) &&
-        ( ${INOTIFYWAIT} --event delete /mount/${RESOURCE_NAME}/TEARDOWN_START_FLAG --timeout ${TIMEOUT} --quiet || ${TRUE} ) &&
-        ${FIND} /mount/${RESOURCE_NAME} -mindepth 1 -maxdepth 1 -type f -name "*.pid" | while read PID_FILE
-        do
-          PID=$( ${CAT} ${PID_FILE} ) &&
-            ${TAIL} --follow /dev/null --pid ${PID} &&
-            ${RM} ${PID_FILE}
-        done &&
-        ${TAIL} --follow /dev/null --pid ${ORIGINATOR_PID}
-    fi &&
     export RESOURCE=/mount/${RESOURCE_NAME} &&
+
+
+
+
 
 
 
