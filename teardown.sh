@@ -34,6 +34,18 @@ TIMEOUT=$(( ${LIFESPAN} - ( $( ${DATE} +%s ) % ${LIFESPAN} ) )) &&
       exit ${LOCK_FAILURE}
     fi
   done &&
+  if [ -f /mount/${RESOURCE_NAME}/TEARDOWN_FORCE_FLAG ]
+  then
+    ${FIND} /mount/${RESOURCE_NAME} -mindepth 1 -maxdepth 1 -type f -name "*.pid" | while read PID_FILE
+    do
+      PID=$( ${CAT} ${PID_FILE} ) &&
+        while ${KILL} ${PID}
+        do
+          ${SLEEP}
+        done &&
+        ${RM} ${PID_FILE}
+    done
+  fi &&
   ${FIND} /mount/${RESOURCE_NAME} -mindepth 1 -maxdepth 1 -type f -name "*.pid" | while read PID_FILE
   do
     PID=$( ${CAT} ${PID_FILE} ) &&
@@ -44,18 +56,6 @@ TIMEOUT=$(( ${LIFESPAN} - ( $( ${DATE} +%s ) % ${LIFESPAN} ) )) &&
   if ${FLOCK} 201
   then
     export RESOURCE=/mount/${RESOURCE_NAME} &&
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

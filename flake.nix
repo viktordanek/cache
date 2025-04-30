@@ -664,6 +664,7 @@
                                                                         [
                                                                             ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                             ( string "RM" "${ pkgs.coreutils }/bin/rm" )
+                                                                            ( string "SLEEP" "${ pkgs.coreutils }/bin/sleep" )
                                                                             ( string "TAIL" "${ pkgs.coreutils }/bin/tail" )
                                                                             ( string "TRUE" "${ pkgs.coreutils }/bin/true" )
                                                                         ]
@@ -720,6 +721,18 @@
                                                                             [ 43 ]
                                                                             [ 44 ]
                                                                             [ 45 ]
+                                                                            [ 46 ]
+                                                                            [ 47 ]
+                                                                            [ 48 ]
+                                                                            [ 49 ]
+                                                                            [ 50 ]
+                                                                            [ 51 ]
+                                                                            [ 52 ]
+                                                                            [ 53 ]
+                                                                            [ 54 ]
+                                                                            [ 55 ]
+                                                                            [ 56 ]
+                                                                            [ 57 ]
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 68 ] )
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 69 ] )
                                                                             ( if builtins.typeOf primary.release == "null" then [ ] else [ 70 ] )
@@ -778,6 +791,7 @@
                                                                                         ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                                         ( string "RESOURCE_NAME" "resource" )
                                                                                         ( string "RM" "${ pkgs.coreutils }/bin/rm" )
+                                                                                        ( string "SLEEP" "${ pkgs.coreutils }/bin/sleep" )
                                                                                         ( string "STATUS" 0 )
                                                                                         ( string "TAIL" "${ pkgs.coreutils }/bin/tail" )
                                                                                         ( string "TRUE" "${ pkgs.coreutils }/bin/true" )
