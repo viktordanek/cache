@@ -1,13 +1,13 @@
-${ECHO} LINE 1 >&2 && if [ -z "${!TIMESTAMP_ENVIRONMENT_VARIABLE}" ]
+if [ -z "${!TIMESTAMP_ENVIRONMENT_VARIABLE}" ]
 then
   declare "${TIMESTAMP_ENVIRONMENT_VARIABLE}"=$( ${DATE} +%s ) &&
     export ${TIMESTAMP_ENVIRONMENT_VARIABLE}
 fi &&
   PARENT_HASH=${!HASH_ENVIRONMENT_VARIABLE} &&
-  declare "${HASH_ENVIRONMENT_VARIABLE}"=$( ${ECHO} '${PRE_HASH} $(( ${!TIMESTAMP_ENVIRONMENT_VARIABLE} / ${LIFESPAN} )) ${HAS_STANDARD_INPUT} ${STANDARD_INPUT} ${@}' | ${SHA512SUM} | ${CUT} --bytes -8 ) &&
-  ${ECHO} LINE 8 >&2 && exec 201>${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}.lock &&
-  ${ECHO} LINE 9 >&2 && if ${FLOCK} 201
-  then ${ECHO} LINE 10 >&2 &&
+  declare "${HASH_ENVIRONMENT_VARIABLE}"=$( ${ECHO} '${PRE_HASH} $(( ${!TIMESTAMP_ENVIRONMENT_VARIABLE} / ${LIFESPAN} )) ${HAS_STANDARD_INPUT} ${STANDARD_INPUT} ${@}' | ${SHA512SUM} | ${CUT} --bytes -128 ) &&
+  exec 201>${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}.lock &&
+  if ${FLOCK} 201
+  then
     if [ ! -d ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE} ]
     then
       ${MKDIR} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE} &&
@@ -42,7 +42,7 @@ fi &&
         fi &&
         ${ECHO} ${?} > ${RESOURCE}/init.status &&
 #
-        source ${MAKE_WRAPPER}/nix-support/setup-hook && echo LINE 45 >&2 &&
+        source ${MAKE_WRAPPER}/nix-support/setup-hook &&
 #
         makeWrapper ${MAKE_WRAPPER_TEARDOWN} ${RESOURCE}/teardown.sh --set ORIGINATOR_PID ${ORIGINATOR_PID} --set RESOURCE_NAME ${RESOURCE_NAME} --set RESOURCES ${RESOURCES} --set STATUS 0 &&
 #
@@ -52,7 +52,7 @@ fi &&
         { ${SETSID} --fork "${RESOURCE}/teardown.sh" < /dev/null > /dev/null 2>&1 & disown; } && ## KLUDGE ALERT:  We should not have to redirect standard output and error.  this probably indicates an error. FIXME UNCOMMENT ME
 #
 #
-        echo LINE 55 >&2 && if [ ${STATUS} != 0 ]
+        if [ ${STATUS} != 0 ]
         then
           exit ${INITIALIZATION_ERROR_CODE}
         elif [ $( ${FIND} ${TARGET_MOUNT} -mindepth 1 -maxdepth 1 | ${WC} --lines ) -gt 1 ]
