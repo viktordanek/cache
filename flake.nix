@@ -525,6 +525,7 @@
                                                                             ( string "PRE_HASH" ( builtins.hashString "sha512" ( builtins.toJSON [ primary.init primary.release primary.post primary.self-teardown primary.force primary.lifespan primary.seed ] ) ) )
                                                                             ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                             ( string "RESOURCES" ( _environment-variable primary.resources ) )
+                                                                            ( string "RM" "${ pkgs.coreutils }/bin/rm" )
                                                                             ( string "SHA512SUM" "${ pkgs.coreutils }/bin/sha512sum" )
                                                                             ( standard-input "STANDARD_INPUT" )
                                                                             ( string "STDERR_EMITTED_ERROR_CODE" primary.stderr-emitted-error-code )
