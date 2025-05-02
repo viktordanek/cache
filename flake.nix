@@ -506,7 +506,7 @@
                                                                             ( string "DIRNAME" "${ pkgs.coreutils }/bin/dirname" )
                                                                             ( string "FIND" "${ pkgs.findutils }/bin/find" )
                                                                             ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
-                                                                            ( string "FORCE" primary.force )
+                                                                            ( string "FORCE" "${ pkgs.coreutils }/bin/${ primary.force }" )
                                                                             ( string "HASH_ENVIRONMENT_VARIABLE" primary.hash-environment-variable )
                                                                             ( has-standard-input "HAS_STANDARD_INPUT" )
                                                                         ]
