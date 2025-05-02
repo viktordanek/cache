@@ -97,7 +97,7 @@
                                                     ( foobar "1-0-0" ( lib { init = init ; tests = tests false true ; lifespan = 2 * inc ; } ) )
                                                     ( foobar "1-0-1" ( lib { init = init ; post = post ; tests = tests false true ; lifespan = 2 * inc ; } ) )
                                                     ( foobar "1-1-0" ( lib { init = init ; release = release ; tests = tests true true ; lifespan = 2 * inc ; } ) )
-                                                    ( foobar "1-1-1" ( lib { init = init ; release = release ; post = post ; tests = tests true true ; lifespan = 2 * inc ; } ) )
+                                                    ( foobar "1-1-1" ( lib { init = init ; release = release ; post = post ; tests = tests true true ; lifespan = 60 * 60 * 24 * 7 ; } ) )
                                                 ] ;
                                     post =
                                         {
@@ -1002,7 +1002,8 @@
                                                                         else
                                                                             ${ pkgs.coreutils }/bin/echo There was error in ${ value.tests }. >&2 &&
                                                                                 exit 60
-                                                                        fi
+                                                                        fi &&
+                                                                        exit 99
                                                                 '' ;
                                                             name = name ;
                                                             src = ./. ;
