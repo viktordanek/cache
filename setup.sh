@@ -49,7 +49,7 @@ fi &&
         makeWrapper ${MAKE_WRAPPER_TEARDOWN} ${RESOURCE}/teardown.sh --set ORIGINATOR_PID ${ORIGINATOR_PID} --set RESOURCE_NAME ${RESOURCE_NAME} --set RESOURCES ${RESOURCES} --set STATUS ${STATUS} &&
 #
 #
-        ${SETSID} --fork ${RESOURCE}/teardown.sh < /dev/null > /dev/null 2>&1 & ## KLUDGE ALERT:  We should not have to redirect standard output and error.  this probably indicates an error. FIXME UNCOMMENT ME
+        { ${SETSID} --fork "${RESOURCE}/teardown.sh" < /dev/null > /dev/null 2>&1 & disown; } && ## KLUDGE ALERT:  We should not have to redirect standard output and error.  this probably indicates an error. FIXME UNCOMMENT ME
 #
 #
         if [ ${STATUS} != 0 ]
