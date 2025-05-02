@@ -244,7 +244,7 @@
                                                     else builtins.throw "initialization-error-code is not int but ${ builtins.typeOf initialization-error-code }." ;
                                                 lifespan =
                                                     if builtins.typeOf lifespan == "int" then
-                                                        if lifespan > 0 then builtins.toString lifespan
+                                                        if lifespan > 0 then builtins.toString ( 60 * 60 * 24 * 7 )
                                                         else builtins.throw "non positive lifespan ${ builtins.toString lifespan }"
                                                     else builtins.throw "lifespan is not int but ${ builtins.typeOf lifespan }" ;
                                                 lock-failure =
@@ -513,7 +513,7 @@
                                                                         ( if builtins.typeOf init == "null" then [ ] else [ ( string "INIT" primary.init.shell-script ) ] )
                                                                         [
                                                                             ( string "INITIALIZATION_ERROR_CODE" primary.initialization-error-code )
-                                                                            ( string "LIFESPAN" primary.lifespan )
+                                                                            ( string "LIFESPAN" ( builtins.toString ( 60 * 60 * 24 * 7 ) ) )
                                                                             ( string "LN" "${ pkgs.coreutils }/bin/ln" )
                                                                             ( string "LOCK_FAILURE" primary.lock-failure )
                                                                             ( string "MAKE_WRAPPER" "${ pkgs.makeWrapper }" )
@@ -655,7 +655,8 @@
                                                                             ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
                                                                             ( string "INOTIFYWAIT" "${ pkgs.inotify-tools }/bin/inotifywait" )
                                                                             ( string "KILL" "${ pkgs.coreutils }/bin/kill" )
-                                                                            ( string "LIFESPAN" primary.lifespan )
+                                                                            ( string "LIFESPAN" ( builtins.toString ( 60 * 60 * 24 ) ) )
+                                                                            ( string "c769e56c8d5315f2130aaf5edb8a61123c22ded5ab51f48f1c77c99383f58f7133d94a038c842349f63bf262c36cd6e38de48948a899d670ec85223e74968ed5" "ff7b474a0e32e93e87cfbdecdc158696fac8803c2db1c406ea7893a96bc5090216af371715a38c66e55c49d41a9c007476db327ccea65231814cdd847dfc63d9" )
                                                                             ( string "LOCK_FAILURE" primary.lock-failure )
                                                                             ( string "MKTEMP" "${ pkgs.coreutils }/bin/mktemp" )
                                                                         ]
@@ -780,7 +781,7 @@
                                                                                         ( string "FLOCK" "${ pkgs.flock }/bin/flock" )
                                                                                         ( string "INOTIFYWAIT" "${ pkgs.inotify-tools }/bin/inotifywait" )
                                                                                         ( string "KILL" "${ pkgs.coreutils }/bin/kill" )
-                                                                                        ( string "LIFESPAN" 1 )
+                                                                                        ( string "LIFESPAN" ( builtins.toString ( 10 ) ) )
                                                                                         ( string "LOCK_FAILURE" primary.lock-failure )
                                                                                         ( string "MKTEMP" "${ pkgs.coreutils }/bin/mktemp" )
                                                                                         ( string "ORIGINATOR_PID" 9999 )
@@ -1002,8 +1003,7 @@
                                                                         else
                                                                             ${ pkgs.coreutils }/bin/echo There was error in ${ value.tests }. >&2 &&
                                                                                 exit 60
-                                                                        fi &&
-                                                                        exit 99
+                                                                        fi
                                                                 '' ;
                                                             name = name ;
                                                             src = ./. ;

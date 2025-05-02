@@ -1,4 +1,4 @@
-TIMEOUT=$(( ${LIFESPAN} - ( $( ${DATE} +%s ) % ${LIFESPAN} ) )) && ${ECHO} ${TIMEOUT} > /mount/${RESOURCE_NAME}/timeout &&
+TIMEOUT=$(( ${LIFESPAN} - ( $( ${DATE} +%s ) % ${LIFESPAN} ) )) && ${ECHO} NOW=$( ${DATE} +%s ) LIFESPAN=${LIFESPAN} TIMEOUT=${TIMEOUT} > /mount/${RESOURCE_NAME}/timeout &&
   ( ${INOTIFYWAIT} --event delete /mount/${RESOURCE_NAME}/TEARDOWN_START_FLAG --timeout ${TIMEOUT} --quiet || ${TRUE} ) &&
   if [ -f /mount/${RESOURCE_NAME/TEARDOWN_FORCE_FLAG} ]
   then
