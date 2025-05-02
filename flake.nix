@@ -664,6 +664,7 @@
                                                                         [
                                                                             ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                             ( string "RM" "${ pkgs.coreutils }/bin/rm" )
+                                                                            ( string "SETSID" "${ pkgs.util-linux }/bin/setsid" )
                                                                             ( string "SLEEP" "${ pkgs.coreutils }/bin/sleep" )
                                                                             ( string "TAIL" "${ pkgs.coreutils }/bin/tail" )
                                                                             ( string "TRUE" "${ pkgs.coreutils }/bin/true" )
@@ -791,6 +792,7 @@
                                                                                         ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                                         ( string "RESOURCE_NAME" "resource" )
                                                                                         ( string "RM" "${ pkgs.coreutils }/bin/rm" )
+                                                                                        ( string "SETSID" "${ pkgs.util-linux }/bin/setsid" )
                                                                                         ( string "SLEEP" "${ pkgs.coreutils }/bin/sleep" )
                                                                                         ( string "STATUS" 0 )
                                                                                         ( string "TAIL" "${ pkgs.coreutils }/bin/tail" )
