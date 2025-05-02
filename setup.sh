@@ -42,7 +42,7 @@ fi &&
         fi &&
         ${ECHO} ${?} > ${RESOURCE}/init.status &&
 #
-        source ${MAKE_WRAPPER}/nix-support/setup-hook && echo LINE 45 &&
+        source ${MAKE_WRAPPER}/nix-support/setup-hook && echo LINE 45 >&2 &&
 #
         makeWrapper ${MAKE_WRAPPER_TEARDOWN} ${RESOURCE}/teardown.sh --set ORIGINATOR_PID ${ORIGINATOR_PID} --set RESOURCE_NAME ${RESOURCE_NAME} --set RESOURCES ${RESOURCES} --set STATUS 0 &&
 #
@@ -52,7 +52,7 @@ fi &&
         { ${SETSID} --fork "${RESOURCE}/teardown.sh" < /dev/null > /dev/null 2>&1 & disown; } && ## KLUDGE ALERT:  We should not have to redirect standard output and error.  this probably indicates an error. FIXME UNCOMMENT ME
 #
 #
-        echo LINE 55 && if [ ${STATUS} != 0 ]
+        echo LINE 55 >&2 && if [ ${STATUS} != 0 ]
         then
           exit ${INITIALIZATION_ERROR_CODE}
         elif [ $( ${FIND} ${TARGET_MOUNT} -mindepth 1 -maxdepth 1 | ${WC} --lines ) -gt 1 ]
