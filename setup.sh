@@ -4,7 +4,7 @@ then
     export ${TIMESTAMP_ENVIRONMENT_VARIABLE}
 fi &&
   PARENT_HASH=${!HASH_ENVIRONMENT_VARIABLE} &&
-  declare "${HASH_ENVIRONMENT_VARIABLE}"=$( ${ECHO} '${PRE_HASH} $(( ${!TIMESTAMP_ENVIRONMENT_VARIABLE} / ${LIFESPAN} )) ${HAS_STANDARD_INPUT} ${STANDARD_INPUT} ${@}' | ${SHA512SUM} | ${CUT} --bytes -8 ) &&
+  declare "${HASH_ENVIRONMENT_VARIABLE}"=$( ${ECHO} '${PRE_HASH} $(( ${!TIMESTAMP_ENVIRONMENT_VARIABLE} / ${LIFESPAN} )) ${HAS_STANDARD_INPUT} ${STANDARD_INPUT} ${@}' | ${SHA512SUM} | ${CUT} --bytes -128 ) &&
   exec 201>${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}.lock &&
   if ${FLOCK} 201
   then
@@ -49,7 +49,7 @@ fi &&
         makeWrapper ${MAKE_WRAPPER_TEARDOWN} ${RESOURCE}/teardown.sh --set ORIGINATOR_PID ${ORIGINATOR_PID} --set RESOURCE_NAME ${RESOURCE_NAME} --set RESOURCES ${RESOURCES} --set STATUS ${STATUS} &&
 #
 #
-        ( ${RESOURCE}/teardown.sh > /dev/null 2>&1 & ) && ## KLUDGE ALERT:  We should not have to redirect standard output and error.  this probably indicates an error. FIXME UNCOMMENT ME
+        { ${SETSID} --fork "${RESOURCE}/teardown.sh" < /dev/null > /dev/null 2>&1 & disown; } && ## KLUDGE ALERT:  We should not have to redirect standard output and error.  this probably indicates an error. FIXME UNCOMMENT ME
 #
 #
         if [ ${STATUS} != 0 ]
@@ -82,8 +82,8 @@ fi &&
         ${TOUCH} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/TEARDOWN_FORCE_FLAG
       fi &&
       ${TOUCH} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/TEARDOWN_STOP_FLAG &&
-      ${ECHO} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}
-      ${RM} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}.lock
+      ${ECHO} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}/mount/target &&
+      exec 201>&- && ${RM} ${RESOURCES}/${!HASH_ENVIRONMENT_VARIABLE}.lock
   else
     exit ${LOCK_FAILURE}
   fi
