@@ -16,7 +16,7 @@
                             _environment-variable = builtins.getAttr system environment-variable.lib ;
                             _shell-script = builtins.getAttr system shell-script.lib ;
                             _visitor = builtins.getAttr system visitor.lib ;
-                            inc = 1 ;
+                            inc = 60 ;
                             foobar =
                                 let
                                     init =
@@ -622,7 +622,7 @@
                                                                 filtered = builtins.filter ( x : builtins.any ( i : x.index == i ) array ) with-index ;
                                                                 simplified = builtins.map ( x : x.line ) filtered ;
                                                                 in builtins.toFile "setup" ( builtins.concatStringsSep "\n" simplified ) ;
-                                                        sleep = 60 ;
+                                                        sleep = inc ;
                                                         tests = primary.tests ;
                                                         trace = false ;
                                                     } ;
