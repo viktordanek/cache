@@ -522,7 +522,7 @@
                                                                             ( string "MKTEMP" "${ pkgs.coreutils }/bin/mktemp" )
                                                                             ( originator-pid "ORIGINATOR_PID" )
                                                                             ( string "OVER_INITIALIZED_TARGET_ERROR_CODE" primary.over-initialized-target-error-code )
-                                                                            ( string "PRE_HASH" ( builtins.hashString "sha512" ( builtins.toJSON [ primary.init primary.release primary.post primary.self-teardown primary.force primary.lifespan primary.seed ] ) ) )
+                                                                            ( string "PRE_HASH" ( let pre-hash-object = { init = primary.init ; release = primary.release ; post = primary.post ; force = primary.force ; self-teardown = primary.self-teardown ; seed = primary.seed ; lifespan = primary.lifespan ; } ; in builtins.trace ( builtins.toJSON pre-hash-object ) ( builtins.hashString "sha512" ( builtins.toJSON pre-hash-object ) ) ) )
                                                                             ( string "READLINK" "${ pkgs.coreutils }/bin/readlink" )
                                                                             ( string "RESOURCES" ( _environment-variable primary.resources ) )
                                                                             ( string "RM" "${ pkgs.coreutils }/bin/rm" )
